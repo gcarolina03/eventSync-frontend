@@ -5,7 +5,7 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Layout title="eventSync">
-       <Component {...pageProps} />;
+       <Component {...pageProps} />
       </Layout>
     </>
       

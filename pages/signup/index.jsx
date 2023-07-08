@@ -1,6 +1,4 @@
-import React from 'react'
-
-function signup() {
+function signup () {
   return (
     <div className="rounded-lg bg-white/30 border border-gray-300 bg-opacity-50 p-5 w-11/12 lg:w-2/5 xl:w-1/5 pt-[80px] px-10 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]  max-sm:px-8">
       <h1 className="text-3xl font-medium">Signup</h1>

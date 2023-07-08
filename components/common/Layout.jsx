@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from 'prop-types'
 import Head from 'next/head';
 import { useRouter } from 'next/router'
 
@@ -16,8 +16,8 @@ const Layout = ({ title, children }) => {
       <title>{title}</title>
       <meta name="author" content="G Carolina Hernandez"/>
       <meta name="description" content="EventSync Web Page"/>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+      <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge"/>
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <link rel="icon" type="image/svg+xml" href="/images/favicon.ico" />
     </Head>
@@ -30,6 +30,12 @@ const Layout = ({ title, children }) => {
     </div>
   </>
   )
+}
+
+// props validation
+Layout.propTypes = {
+  title: PropTypes.string,
+  children: PropTypes.object
 }
 
 export default Layout

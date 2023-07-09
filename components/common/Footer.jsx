@@ -3,7 +3,7 @@ function Footer() {
     <footer className="bg-white fixed inset-x-0 bottom-0">
       <div className="mx-auto w-full">
         <hr className="my-12 h-px w-4/5 mx-auto border-t-0 bg-transparent bg-gradient-to-r from-transparent via-neutral-500 to-transparent opacity-25 dark:opacity-100" />
-        <div className="grid grid-cols-2 gap-8 md:w-3/6 px-4 py-2 mx-auto md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 md:w-3/6 px-4 py-2 mx-auto md:grid-cols-4 text-center md:text-left">
           <div>
             <h2 className="mb-6 text-xs font-semibold uppercase">Popular Services</h2>
             <ul className="text-gray-500 font-medium">

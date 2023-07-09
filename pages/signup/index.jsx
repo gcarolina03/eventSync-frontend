@@ -73,6 +73,7 @@ function Signup () {
   function handleFileChange(e) {
     const file = e.target.files[0]
     setSelectedFile(file)
+
     // Generate a temporary URL for the selected file
     const previewURL = URL.createObjectURL(file)
     setAvatarPreview(previewURL)
@@ -80,19 +81,8 @@ function Signup () {
 
   function imgVerification() {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpeg'] // Specify the allowed file types
-
-    if (selectedFile && allowedTypes.includes(selectedFile.type) || selectedFile === null) {
-      return true
-    } else {
-      // Reset the selected file and show an error message
-      setSelectedFile(null)
-      setAvatarPreview(null)
-      setErrorMsg('Invalid file type. Please select a JPEG/JPG or PNG image.')
-      showErrorMsg()
-      return false
-    }
+    if(selectedFile && selectedFile !== null) return (!allowedTypes.includes(selectedFile.type))
   }
-  
 
   // SIGN UP SERVICE
   const SignUpService = async () => {
@@ -104,7 +94,8 @@ function Signup () {
       setErrorMsg('Warning! Some fields are incorrect or empty')
       showErrorMsg()
     } else {
-      router.push('/') // 
+      router.push('/') 
+      window.location.href = window.location.origin
     }
   }
 
@@ -140,9 +131,9 @@ function Signup () {
 
   return (
     <div className="rounded-lg mt-10 sm:mt-0 bg-white/30 border border-gray-300 bg-opacity-50 p-5 w-11/12 lg:w-2/5 xl:w-1/5 pt-[50px] px-10 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]  max-sm:px-8">
-      <h1 className="text-3xl font-medium">Signup</h1>
-      <p className="text-sm">Just some details to get you in.!</p>
-      <form className="space-y-5 mt-5" onSubmit={(e) => { submitForm(e) }} encType="multipart/form-data">
+      <h1 className="text-3xl font-medium">Welcome</h1>
+      <p className="text-sm">Just some details to get you in!</p>
+      <form className="space-y-4 mt-5" onSubmit={(e) => { submitForm(e) }} encType="multipart/form-data">
         {avatarPreview && 
           <img src={avatarPreview} alt="Avatar Preview" className="w-[50px] h-[50px] rounded-full mx-auto" />
         ||
@@ -152,20 +143,25 @@ function Signup () {
           <input type="text" className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleFirstName} placeholder="First Name*" />
           <input type="text" className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleLastName} placeholder="Last Name" />
         </div>
+        <span className={`m-0 p-0 ${firstNameVerification() && firstName !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid first name.</span>
         <input type="text" className="w-full h-12 border border-gray-800 rounded px-3" onChange={handleEmail} placeholder="Email*" />
+        <span className={`m-0 p-0 ${emailVerification() && email !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid email.</span>
         <div className="relative">
           <input type={isPassVisible ? 'text' : 'password'} onChange={handlePassword} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Password*" />
           <div className="absolute inset-y-0 right-0 mr-4 pl-3 cursor-pointer flex items-center" onClick={() => handleClickPass()}>
             <i className={`fas ${isPassVisible ? 'fa-eye' : 'fa-eye-slash'} text-gray-400`}></i>
           </div>
         </div>
+        <span className={`m-0 p-0 ${passwordVerification() && password !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Password does not meet the security requirements.</span>
         <div className="relative">
           <input type={isPassRepVisible ? 'text' : 'password'} onChange={handleRepeatPassword} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Confirm Password*" />
           <div className="absolute inset-y-0 right-0 mr-4 pl-3 cursor-pointer flex items-center" onClick={() => handleClickPassRep()}>
             <i className={`fas ${isPassRepVisible ? 'fa-eye' : 'fa-eye-slash'} text-gray-400`}></i>
           </div>
         </div>
-        <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} />
+        <span className={`m-0 p-0 ${repeatPasswordVerification() && repeatPassword !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Password does not meet the security requirements.</span>
+        <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} className='block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100' />
+        <span className={`m-0 p-0 ${imgVerification() && selectedFile !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Invalid file type. Please select a JPEG/JPG or PNG image.</span>
         {showError &&
           <ErrorMsg message={errorMsg} hide={hideErrorMsg}/>
         }

@@ -13,6 +13,8 @@ function Signup () {
   const [isPassVisible, setIPassVisible] = useState(false);
   const [isPassRepVisible, setIPasRepVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [errorMsg, setErrorMsg] = useState('')
   const [showError, setShowError] = useState(false)
 
@@ -67,9 +69,34 @@ function Signup () {
     return !(reg.test(email));
   }
 
+  // ------ AVATAR
+  function handleFileChange(e) {
+    const file = e.target.files[0]
+    setSelectedFile(file)
+    // Generate a temporary URL for the selected file
+    const previewURL = URL.createObjectURL(file)
+    setAvatarPreview(previewURL)
+  }
+
+  function imgVerification() {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpeg'] // Specify the allowed file types
+
+    if (selectedFile && allowedTypes.includes(selectedFile.type) || selectedFile === null) {
+      return true
+    } else {
+      // Reset the selected file and show an error message
+      setSelectedFile(null)
+      setAvatarPreview(null)
+      setErrorMsg('Invalid file type. Please select a JPEG/JPG or PNG image.')
+      showErrorMsg()
+      return false
+    }
+  }
+  
+
   // SIGN UP SERVICE
   const SignUpService = async () => {
-    const res = await SignUpAPI(firstName, lastName, email, password)
+    const res = await SignUpAPI(firstName, lastName, email, password, selectedFile)
     if (res === 'error') {
       setErrorMsg('Error! Email already exists')
       showErrorMsg()
@@ -94,24 +121,33 @@ function Signup () {
   // SUBMIT
   function submitForm(e) {
     e.preventDefault();
+    console.log(!repeatPasswordVerification())
     if (
       !firstNameVerification() &&
       !passwordVerification() &&
       !emailVerification() &&
-      !repeatPasswordVerification()
+      !repeatPasswordVerification() &&
+      imgVerification()
     ) {
       SignUpService()
     } else {
-      setErrorMsg('Warning! Some fields are incorrect or empty')
-      showErrorMsg()
+      if(imgVerification) {
+        setErrorMsg('Warning! Some fields are incorrect or empty')
+        showErrorMsg()
+      }
     }
   }
 
   return (
-    <div className="rounded-lg bg-white/30 border border-gray-300 bg-opacity-50 p-5 w-11/12 lg:w-2/5 xl:w-1/5 pt-[80px] px-10 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]  max-sm:px-8">
+    <div className="rounded-lg mt-10 sm:mt-0 bg-white/30 border border-gray-300 bg-opacity-50 p-5 w-11/12 lg:w-2/5 xl:w-1/5 pt-[50px] px-10 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)]  max-sm:px-8">
       <h1 className="text-3xl font-medium">Signup</h1>
       <p className="text-sm">Just some details to get you in.!</p>
-      <form className="space-y-5 mt-5" onSubmit={(e) => { submitForm(e) }}>
+      <form className="space-y-5 mt-5" onSubmit={(e) => { submitForm(e) }} encType="multipart/form-data">
+        {avatarPreview && 
+          <img src={avatarPreview} alt="Avatar Preview" className="w-[50px] h-[50px] rounded-full mx-auto" />
+        ||
+          <img src={`${process.env.baseURL}/uploads/avatar.jpg`} alt="Default Avatar" className="w-[50px] h-[50px] rounded-full mx-auto"/>
+        }
         <div className="w-full flex items-center gap-4">
           <input type="text" className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleFirstName} placeholder="First Name*" />
           <input type="text" className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleLastName} placeholder="Last Name" />
@@ -129,6 +165,7 @@ function Signup () {
             <i className={`fas ${isPassRepVisible ? 'fa-eye' : 'fa-eye-slash'} text-gray-400`}></i>
           </div>
         </div>
+        <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} />
         {showError &&
           <ErrorMsg message={errorMsg} hide={hideErrorMsg}/>
         }

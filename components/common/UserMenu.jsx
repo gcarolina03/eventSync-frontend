@@ -24,7 +24,7 @@ function UserMenu({ user, handleShow, menu }) {
           </svg>
         </button>
         {/* <!-- Dropdown menu --> */}
-        <div className={`z-50 ${menu ? '' : 'hidden'} absolute top-5 right-2 my-4 text-base backdrop-blur list-none bg-white rounded-lg shadow`}>
+        <div className={`z-50 ${menu ? '' : 'hidden'} absolute top-5 right-2 my-4 text-base list-none bg-white rounded-lg shadow`}>
           <p className='px-4 py-3 mt text-xs'>Currently in</p>
           <div className="px-4 py-3 flex flex-row gap-4 w-[250px]">
             <img className="w-10 h-10 rounded-full" src={`${process.env.baseURL}/${user.img_url}`} alt="user avatar" />
@@ -35,13 +35,13 @@ function UserMenu({ user, handleShow, menu }) {
           </div>
           <ul className="py-2">
             <li>
-              <a href="#" className="block px-4 py-2 font-bold hover:text-primary">Profile</a>
+              <a href="/profile" className="block px-4 py-2 font-bold hover:text-primary">Profile</a>
             </li>
             <li>
-              <a href="#" className="block px-4 py-2 font-bold hover:text-primary">My Events</a>
+              <a href="/events" className="block px-4 py-2 font-bold hover:text-primary">My Events</a>
             </li>
             <li>
-              <a href="#" className="block px-4 py-2 font-bold hover:text-primary">My Services</a>
+              <a href="/profile/services" className="block px-4 py-2 font-bold hover:text-primary">My Services</a>
             </li>
             <hr className="h-0.5 border-t-0 mx-2 bg-neutral-300" />
             <li>

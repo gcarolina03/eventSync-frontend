@@ -24,7 +24,7 @@ function UserMenu({ user, handleShow, menu }) {
           </svg>
         </button>
         {/* <!-- Dropdown menu --> */}
-        <div className={`z-50 ${menu ? '' : 'hidden'} absolute top-2 right-2 my-4 text-base backdrop-blur list-none bg-white rounded-lg shadow`}>
+        <div className={`z-50 ${menu ? '' : 'hidden'} absolute top-5 right-2 my-4 text-base backdrop-blur list-none bg-white rounded-lg shadow`}>
           <p className='px-4 py-3 mt text-xs'>Currently in</p>
           <div className="px-4 py-3 flex flex-row gap-4 w-[250px]">
             <img className="w-10 h-10 rounded-full" src={`${process.env.baseURL}/${user.img_url}`} alt="user avatar" />

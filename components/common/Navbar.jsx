@@ -28,23 +28,25 @@ function Navbar() {
     <>
     <nav className="bg-primary">
       <div className="flex flex-wrap justify-between items-center mx-auto width-full py-4 px-1 sm:px-4">
-        <div className='flex flex-row align-center'>
         <img src="../images/logo.png" className="h-8 mx-3" alt="EventSync Logo" />
         <div className="justify-between items-center flex lg:w-auto">
-          <ul className="flex font-medium flex-row gap-2 sm:gap-6">
+          <ul className="flex font-medium flex-row gap-2 sm:gap-6 items-center">
             <li>
-              <a href="/" className="block py-2 text-white rounded bg-transparent" aria-current="page">Home</a>
+              <Link href="/" className={`block py-2 ${path === '/' ? 'text-white cursor-default' : 'text-gray-400 hover:text-light'} rounded bg-transparent font-bold`} aria-current="page">Home</Link>
             </li>
+            <div class="inline-block h-[20px] w-0.5 bg-neutral-100 opacity-40"></div>
             <li>
-              <a href="#" className="block py-2 text-gray-400 hover:text-light">Services</a>
+              <Link href="/services" className={`block py-2 ${path === '/services' ? 'text-white cursor-default' : 'text-gray-400 hover:text-light'} font-bold`}>Services</Link>
             </li>
             {user &&
-              <li>
-                <a href="#" className="py-2 text-gray-400 hidden sm:block hover:text-light">Events</a>
-              </li>
+              <>
+                <div class="inline-block h-[20px] w-0.5 bg-neutral-100 opacity-40"></div>
+                <li>
+                  <Link href="/events" className={`py-2 block ${path === '/events' ? 'text-white cursor-default' : 'text-gray-400 hover:text-light'} font-bold`}>Events</Link>
+                </li>
+              </>
             }
           </ul>
-        </div>
         </div>
         <div className="flex items-center flex-row gap-4 sm:mr-6">
           {!user &&

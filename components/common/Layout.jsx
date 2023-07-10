@@ -22,9 +22,9 @@ const Layout = ({ title, children }) => {
       <link rel="icon" type="image/svg+xml" href="/images/favicon.ico" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     </Head>
-    <div id="container" className="h-screen border border-red-900 w-full ">
+    <div id="container" className="h-screen w-full ">
       <Navbar />
-      <main className="flex h-[100%] border-black border w-full items-center justify-center my-[-5.1rem]">
+      <main className="flex h-[100%] w-full items-center justify-center my-[-5.1rem]">
         {children}
       </main>
       {path !== '/login' && path !== '/signup' && <Footer />}

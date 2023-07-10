@@ -112,13 +112,12 @@ function Signup () {
   // SUBMIT
   function submitForm(e) {
     e.preventDefault();
-    console.log(!repeatPasswordVerification())
     if (
       !firstNameVerification() &&
       !passwordVerification() &&
       !emailVerification() &&
       !repeatPasswordVerification() &&
-      imgVerification()
+      !imgVerification()
     ) {
       SignUpService()
     } else {

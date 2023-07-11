@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ErrorMsg from '../../components/common/ErrorMsg'
 import { LoginAPI } from '../../services/auth.service'
 import { useRouter } from 'next/router'
+import { Eye, EyeSlash } from '../../components/common/Icons'
 
 function Login() {
   const router = useRouter()
@@ -79,7 +80,7 @@ function Login() {
         <div className="relative">
           <input type={isPassVisible ? 'text' : 'password'} onChange={handlePassword} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Password*" />
           <div className="absolute inset-y-0 right-0 mr-4 pl-3 cursor-pointer flex items-center" onClick={() => handleTogglePassword()}>
-            <i className={`fas ${isPassVisible ? 'fa-eye' : 'fa-eye-slash'} text-gray-400`}></i>
+            {isPassVisible ? <Eye className='text-gray-400'/> : <EyeSlash className='text-gray-400' />}
           </div>
         </div>
         {showError &&

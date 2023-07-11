@@ -2,6 +2,7 @@ import { useState } from 'react'
 import ErrorMsg from '../../components/common/ErrorMsg'
 import { SignUpAPI } from '../../services/auth.service'
 import { useRouter } from 'next/router'
+import { Eye, EyeSlash } from '../../components/common/Icons'
 
 function Signup () {
   const router = useRouter()
@@ -148,14 +149,14 @@ function Signup () {
         <div className="relative">
           <input type={isPassVisible ? 'text' : 'password'} onChange={handlePassword} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Password*" />
           <div className="absolute inset-y-0 right-0 mr-4 pl-3 cursor-pointer flex items-center" onClick={() => handleClickPass()}>
-            <i className={`fas ${isPassVisible ? 'fa-eye' : 'fa-eye-slash'} text-gray-400`}></i>
+            {isPassVisible ? <Eye className='text-gray-400'/> : <EyeSlash className='text-gray-400' />}
           </div>
         </div>
         <span className={`m-0 p-0 ${passwordVerification() && password !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Password does not meet the security requirements.</span>
         <div className="relative">
           <input type={isPassRepVisible ? 'text' : 'password'} onChange={handleRepeatPassword} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Confirm Password*" />
           <div className="absolute inset-y-0 right-0 mr-4 pl-3 cursor-pointer flex items-center" onClick={() => handleClickPassRep()}>
-            <i className={`fas ${isPassRepVisible ? 'fa-eye' : 'fa-eye-slash'} text-gray-400`}></i>
+            {isPassRepVisible ? <Eye className='text-gray-400'/> : <EyeSlash className='text-gray-400' />}
           </div>
         </div>
         <span className={`m-0 p-0 ${repeatPasswordVerification() && repeatPassword !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Password does not meet the security requirements.</span>

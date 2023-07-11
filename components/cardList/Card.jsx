@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import { ArrowRight, CalendarDays, Clock, User } from '../common/Icons'
 import Link from 'next/link'
+import { formatDate } from '../../lib/utils'
 function Card({ data }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg relative h-[380px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
@@ -14,7 +15,7 @@ function Card({ data }) {
           </a>
           <div className='flex gap-2 items-center text-gray-600 mb-1'>
             <CalendarDays />
-            <p className="font-normal">{data.event_date.substring(0, 10)} </p>
+            <p className="font-normal">{formatDate(data.event_date)} </p>
           </div>
           
           <div className='flex gap-2 items-center text-gray-600 mb-1'>

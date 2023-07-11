@@ -26,3 +26,17 @@ export const CreateEventAPI = async (title, event_date, start_time, end_time) =>
     console.error('Cannot create event', error)
   }
 }
+
+export const GetEventAPI = async (id) => {
+  try {
+    console.log(id)
+    const { data } = await api.get(`/api/events/${id}`,  {
+        headers: {
+        token: localStorage.getItem('token')
+      }
+    })
+    return data
+  } catch (error) {
+    console.error('Cannot get event', error)
+  }
+}

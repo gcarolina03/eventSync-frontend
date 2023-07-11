@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import { ArrowRight, CalendarDays, Clock, User } from '../common/Icons'
+import Link from 'next/link'
 function Card({ data }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg relative h-[380px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
@@ -26,10 +27,10 @@ function Card({ data }) {
             <p className="font-normal">0</p>
           </div>
       </div>
-      <a href={`/events/${data._id}`} className="absolute right-4 bottom-4 inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">
+      <Link href={`/events/${data._id}`} className="absolute right-4 bottom-4 inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">
           See
           <ArrowRight className='w-3.5 h-3.5 ml-2' />
-      </a>
+      </Link>
     </div>
   )
 }

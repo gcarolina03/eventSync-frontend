@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { GetEventsAPI } from '../../services/event.service'
-import Card from '../../components/cardList/Card'
+import Card from '../../components/events/Card'
 import Blur from '../../components/common/Blur'
 import EventForm from '../../components/events/EventForm'
 import { CalendarPlus } from '../../components/common/Icons'

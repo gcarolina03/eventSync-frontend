@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types'
 import { useState } from 'react'
-import { CreateEventAPI } from '../../services/event.service'
+import { CreateEventAPI, UpdateEventAPI } from '../../services/event.service'
 import ErrorMsg from '../common/ErrorMsg'
 import { XMark } from '../common/Icons'
+import { formatDate } from '../../lib/utils'
+import { useRouter } from 'next/router'
 
-function EventForm({ handleForm }) {
+function EventForm({ handleForm, event }) {
+  const router = useRouter()
   // DATA
   const [title, setTitle] = useState('')
   const [date, setDate] = useState('')
@@ -12,6 +15,7 @@ function EventForm({ handleForm }) {
   const [end, setEnd] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [showError, setShowError] = useState(false)
+  const [editStatus, setEditStatus] = useState(false)
 
   // TITLE
   const handleTitle = (e) => {
@@ -57,6 +61,40 @@ function EventForm({ handleForm }) {
     }
   }
 
+  // UPDATE DATE IF EVENT IN PARAMS
+  const updateData = () => {
+    if (event) {
+      setTitle(event.title)
+      setDate(formatDate(event.event_date))
+      setStart(event.start_time)
+      setEnd(event.end_time)
+      setEditStatus(true)
+    }
+  }
+
+  useState(() => {
+    updateData()
+  }, [event])
+
+  // HANDLE DATA TO UPDATE
+  const dataToSend = () => {
+    let data = {}
+    if(title !== event.title && title !== '' && validationTitle()) data.title = title
+    if(date !== formatDate(event.event_date) && date !== '' && validationDate()) data.event_date = date
+    if(start !== event.start_time && start !== '') data.start_time = start
+    if(end !== event.end_time && end !== '' && validationEnd()) data.end_time = end
+    return data
+  }
+
+  // EDIT EVENT SERVICE
+  const UpdateEventService = async () => {
+    const data = dataToSend()
+    const res = await UpdateEventAPI(event._id, data)
+    if (res) {
+      router.push('/events')
+    }
+  }
+
   // ERROR 
   const showErrorMsg = () => {
     setShowError(true)
@@ -70,12 +108,13 @@ function EventForm({ handleForm }) {
   // SUBMIT
   function submitForm(e) {
     e.preventDefault();
-    if (
-      validationTitle() &&
-      validationDate() &&
-      validationEnd()
-    ) {
-      CreateEventService()
+    if ( validationTitle() && validationDate() && validationEnd() ) {
+      if (editStatus) {
+        UpdateEventService()
+        setEditStatus(false)
+      } else {
+        CreateEventService()
+      }
     } else {
       setErrorMsg('Warning! Some fields are incorrect or empty')
       showErrorMsg()
@@ -86,24 +125,24 @@ function EventForm({ handleForm }) {
     <div className="rounded-lg bg-white border transform translate-x-[-50%] left-[50%] top-10 sm:top-[40%] absolute border-gray-300 p-5 w-11/12 lg:w-2/5 xl:w-1/5 py-[50px] px-10 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)] ">
       <div onClick={handleForm} className="bg-white cursor-pointer rounded-md p-2 inline-flex absolute items-center justify-center top-4 right-4 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
         <span className="sr-only">Close menu</span>
-        <XMark className='h-6 w-6' />
+        <XMark className='h-6 w-6' /> 
       </div>
-      <h1 className="text-3xl font-medium">New event...</h1>
-      <p className="text-sm">Just need some details to start</p>
+      <h1 className="text-3xl font-medium">{editStatus ? 'Update your event...' : 'New event...'}</h1>
+      <p className="text-sm">{editStatus ? 'Check out the details' : 'Just need some details to start'}</p>
       <form className="space-y-3 mt-5" onSubmit={(e) => submitForm(e)}>
-        <input type="text" className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Title*" onChange={handleTitle} />
+        <input type="text" value={title} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Title*" onChange={handleTitle} />
         <span className={`m-0 p-0 ${!validationTitle() && title !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid title.</span>
-        <input className="w-full h-12 border border-gray-800 rounded px-3" type='date' placeholder="Date*" onChange={handleDate}/>
-        <span className={`m-0 p-0 ${!validationDate() && date !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid date.</span>
+        <input value={date} disabled={editStatus} className="w-full h-12 border border-gray-800 rounded px-3" type='date' placeholder="Date*" onChange={handleDate}/>
+        <span className={`m-0 p-0 ${!validationDate() && date !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>{editStatus ? 'Event date cannot be changed' : 'Please provide a valid date.'}</span>
         <div className="flex gap-5">
-          <input className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="Start time*" onChange={handleStart}/>
-          <input className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="End time*"  onChange={handleEnd}/>
+          <input value={start} className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="Start time*" onChange={handleStart}/>
+          <input value={end} className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="End time*"  onChange={handleEnd}/>
         </div>
         <span className={`m-0 p-0 ${!validationEnd() && end !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>End time must be after start time.</span>
         {showError &&
           <ErrorMsg message={errorMsg} hide={hideErrorMsg}/>
         }
-        <button className="text-center w-full bg-secondary bg-opacity-70 rounded-lg py-3 font-medium" type='submit'>Start</button>
+        <button className="text-center w-full bg-secondary bg-opacity-70 rounded-lg py-3 font-medium" type='submit'> { editStatus ? 'Update' : 'Start' }</button>
       </form>
     </div>
   )

@@ -36,7 +36,7 @@ function Events() {
           />
           {events.length > 0 && 
             events.map((obj) => (
-              <Card data={obj} />
+              <Card key={obj._id} data={obj} />
             ))
           }
         </div>

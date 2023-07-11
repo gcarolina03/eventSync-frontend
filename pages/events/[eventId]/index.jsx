@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
-import { GetEventAPI } from "../../../services/event.service"
+import { DeleteEventAPI, GetEventAPI } from "../../../services/event.service"
 import { useRouter } from 'next/router'
 import { CalendarDays, Card, CirclePlus, Clock, Pencil, TrashCan, User } from "../../../components/common/Icons"
 import AddItem from "../../../components/common/AddItem"
 import Blur from "../../../components/common/Blur"
 import EventForm from "../../../components/events/EventForm"
+import { formatDate } from "../../../lib/utils"
+import DeleteAlert from "../../../components/events/DeleteAlert"
 
 function ResumeEvent() {
   const router = useRouter()
@@ -12,6 +14,7 @@ function ResumeEvent() {
   // DATA
   const [event, setEvent] = useState('')
 	const [showEditForm, setShowEditForm] = useState(false)
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const getEvent = async () => {
     const res = await GetEventAPI(eventId)
@@ -26,6 +29,18 @@ function ResumeEvent() {
 		setShowEditForm(!showEditForm)
 	}
 
+	const handleDelete = () => {
+		setShowDeleteConfirm(!showDeleteConfirm)
+	}
+
+	// DELETE EVENT SERVICE
+  const DeleteEventService = async () => {
+    const res = await DeleteEventAPI(eventId)
+    if (res) {
+      router.push('/events')
+    }
+  }
+
   return (
     event !== '' && (
 			<div className='w-full h-full px-8 pt-10'>
@@ -36,7 +51,7 @@ function ResumeEvent() {
 							Guest List
 						</div>
 						<Pencil onClick={handleEditForm} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4" />     
-						<TrashCan className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-red-300 hover:bg-red-400 text-red-700 px-4" />     
+						<TrashCan onClick={handleDelete} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-red-300 hover:bg-red-400 text-red-700 px-4" />     
 					</div>
 				</div>
 				<hr className="my-5 h-0.5 border-t-0 bg-gray-500 opacity-20" />
@@ -57,7 +72,7 @@ function ResumeEvent() {
 											<CalendarDays />
 											Date
 										</p>
-										<p className="font-bold">{event.event_date} </p>
+										<p className="font-bold">{formatDate(event.event_date)} </p>
 									</div>
 									<div className='flex gap-2 items-center justify-between text-gray-600 mb-1'>
 										<p className="font-normal flex gap-2 items-center">
@@ -86,7 +101,7 @@ function ResumeEvent() {
 					</div>
 					{/* SERVICES AREA */}
 					<div className="col-span-4 relative sm:col-span-9 xl:col-span-10 p-6 pl-6 sm:pl-20">
-						<div class="h-full min-h-[1em] hidden sm:block absolute left-0 w-px self-stretch bg-gradient-to-tr from-transparent via-gray-500 to-transparent opacity-20"></div>
+						<div className="h-full min-h-[1em] hidden sm:block absolute left-0 w-px self-stretch bg-gradient-to-tr from-transparent via-gray-500 to-transparent opacity-20"></div>
 						<div className="flex justify-between">
 							<h2 className="text-2xl font-bold mb-4">Services</h2>
 						</div>
@@ -101,6 +116,9 @@ function ResumeEvent() {
 				</div>
 				{showEditForm &&
           <Blur form={ <EventForm handleForm={handleEditForm} event={event} />} />
+        }
+				{showDeleteConfirm &&
+          <Blur form={ <DeleteAlert handleDelete={handleDelete} deleteEvent={DeleteEventService} />} />
         }
 			</div>
 		)

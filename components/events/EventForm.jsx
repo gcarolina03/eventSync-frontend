@@ -123,25 +123,42 @@ function EventForm({ handleForm, event }) {
 
   return (
     <div className="rounded-lg bg-white border border-gray-300 p-5 w-11/12 lg:w-2/5 relative xl:w-1/5 py-[50px] px-10 shadow-[0px_10px_1px_rgba(221,_221,_221,_1),_0_10px_20px_rgba(204,_204,_204,_1)] ">
+      {/* ------- CLOSE ICON ------- */}
       <div onClick={handleForm} className="bg-white cursor-pointer rounded-md p-2 inline-flex absolute items-center justify-center top-4 right-4 text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
         <span className="sr-only">Close menu</span>
         <XMark className='h-6 w-6' /> 
       </div>
+      {/* ------- TITLE FORM ------- */}
       <h1 className="text-3xl font-medium">{editStatus ? 'Update your event...' : 'New event...'}</h1>
       <p className="text-sm">{editStatus ? 'Check out the details' : 'Just need some details to start'}</p>
+      {/* ------- FORM ------- */}
       <form className="space-y-3 mt-5" onSubmit={(e) => submitForm(e)}>
+        {/* ------- TITLE EVENT ------- */}
         <input type="text" value={title} className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Title*" onChange={handleTitle} />
         <span className={`m-0 p-0 ${!validationTitle() && title !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid title.</span>
-        <input value={date} disabled={editStatus} className="w-full h-12 border border-gray-800 rounded px-3" type='date' placeholder="Date*" onChange={handleDate}/>
-        <span className={`m-0 p-0 ${!validationDate() && date !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>{editStatus ? 'Event date cannot be changed' : 'Please provide a valid date.'}</span>
-        <div className="flex gap-5">
-          <input value={start} className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="Start time*" onChange={handleStart}/>
-          <input value={end} className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="End time*"  onChange={handleEnd}/>
+        {/* ------- DATE ------- */}
+        <div className='flex flex-col w-full'>
+          <span className={`m-0 p-0 text-gray-600 text-xs`}>Date*</span>
+          <input value={date} disabled={editStatus} className="w-full h-12 border border-gray-800 rounded px-3" type='date' placeholder="Date*" onChange={handleDate}/>
         </div>
+        <span className={`m-0 p-0 ${!validationDate() && date !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>{editStatus ? 'Event date cannot be changed' : 'Please provide a valid date.'}</span>
+        {/* ------- START AND END ------- */}
+        <div className="flex gap-5">
+          <div className='flex flex-col w-full'>
+            <span className={`m-0 p-0 text-gray-600 text-xs`}>Start Time*</span>
+            <input value={start} className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="Start time*" onChange={handleStart}/>
+          </div>
+          <div className='flex flex-col w-full'>
+            <span className={`m-0 p-0 text-gray-600 text-xs`}>End Time*</span>
+            <input value={end} className="w-full h-12 border border-gray-800 rounded px-3" type='time' placeholder="End time*"  onChange={handleEnd}/>
+          </div>
+        </div>
+        {/* ------- ERROR ------- */}
         <span className={`m-0 p-0 ${!validationEnd() && end !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>End time must be after start time.</span>
         {showError &&
           <ErrorMsg message={errorMsg} hide={hideErrorMsg}/>
         }
+        {/* ------- BUTTON------- */}
         <button className="text-center w-full bg-secondary bg-opacity-70 rounded-lg py-3 font-medium" type='submit'> { editStatus ? 'Update' : 'Start' }</button>
       </form>
     </div>

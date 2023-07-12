@@ -4,23 +4,30 @@ import AddItem from "../../../components/common/AddItem"
 import { GetServicesAPI } from "../../../services/myservices.service"
 import Blur from "../../../components/common/Blur"
 import ServicesForm from "../../../components/services/ServicesForm"
+import Card from "../../../components/services/Card"
 
 function MyServices() {
   const [services, setServices] = useState([])
   const [showForm, setShowForm] = useState(false)
+  const [serviceTo, setServiceTo] = useState('')
 
   const getServices = async () => {
     const res = await GetServicesAPI()
-    setServices(res)
+    setServices(res.data)
   }
 
   const handleForm = () => {
     setShowForm(!showForm)
   }
 
-  /* useEffect(() => {
+  useEffect(() => {
     getServices()
-  }, []) */
+  }, [])
+
+  const handleServiceTo = (data) => {
+    setServiceTo(data)
+    setShowForm(!showForm)
+  }
 
   return (
     <>
@@ -38,9 +45,14 @@ function MyServices() {
             text='Publish a new service.' 
             icon={ <CirclePlus className='fill-gray-500 mb-4' height='120' /> }
           />
+          {services.length > 0 &&
+            services.map((service) => (
+              <Card key={service._id} data={service} edit={handleServiceTo} />
+            ))
+          }
         </div>
         {showForm &&
-          <Blur form={ <ServicesForm handleForm={handleForm} />} />
+          <Blur form={ <ServicesForm handleForm={handleForm} service={serviceTo}/>} />
         }
       </div>
     </>

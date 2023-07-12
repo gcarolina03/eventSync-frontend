@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { formatDate } from '../../lib/utils'
 function Card({ data }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg relative h-[380px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+    <div className="bg-white border border-gray-200 rounded-lg relative h-[400px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div className="bg-[#9CC0FA] rounded-t-lg relative h-[180px]">
         <div className='px-3 py-1 bg-gray-600 text-white font-bold top-2 right-2 rounded-lg absolute opacity-80'>{data.total_price} €</div>
         <img className="object-cover rounded-t-lg w-full h-full mx-auto" src={`${data.img_url}`} alt="" />

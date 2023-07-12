@@ -35,7 +35,7 @@ function MyServices() {
         <div className='mt-4 flex flex-wrap gap-8'>
           <AddItem 
             onClick={handleForm} 
-            text='Create a new event.' 
+            text='Publish a new service.' 
             icon={ <CirclePlus className='fill-gray-500 mb-4' height='120' /> }
           />
         </div>

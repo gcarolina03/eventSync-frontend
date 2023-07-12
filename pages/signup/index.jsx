@@ -137,7 +137,7 @@ function Signup () {
         {avatarPreview && 
           <img src={avatarPreview} alt="Avatar Preview" className="w-[50px] h-[50px] rounded-full mx-auto" />
         ||
-          <img src={`${process.env.baseURL}/uploads/avatar.jpg`} alt="Default Avatar" className="w-[50px] h-[50px] rounded-full mx-auto"/>
+          <img src={`https://res.cloudinary.com/dhveca8ba/image/upload/v1689175163/jvpcce9vmgjqjzqcc8ec.jpg`} alt="Default Avatar" className="w-[50px] h-[50px] rounded-full mx-auto"/>
         }
         <div className="w-full flex items-center gap-4">
           <input type="text" className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleFirstName} placeholder="First Name*" />
@@ -160,9 +160,12 @@ function Signup () {
           </div>
         </div>
         <span className={`m-0 p-0 ${repeatPasswordVerification() && repeatPassword !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Password does not meet the security requirements.</span>
-        <input type="file" name="avatar" accept="image/*" onChange={handleFileChange} className='block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100' />
+        
+        <input name="avatar" accept="image/*" onChange={handleFileChange} className="block cursor-pointer file:cursor-pointer w-full mb-5 text-sm text-slate-500 border border-gray-200 rounded-lg cursor-pointer bg-gray-50 focus:outline-none file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700" type="file" />
         <span className={`m-0 p-0 ${imgVerification() && selectedFile !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Invalid file type. Please select a JPEG/JPG or PNG image.</span>
-        {showError &&
+        {
+        
+        showError &&
           <ErrorMsg message={errorMsg} hide={hideErrorMsg}/>
         }
         <button className="text-center w-full bg-secondary bg-opacity-70 rounded-lg py-3 font-medium" type='submit'>Signup</button>

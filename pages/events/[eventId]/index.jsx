@@ -61,7 +61,7 @@ function ResumeEvent() {
 						<div className="p-6 flex flex-col justify-between h-full">
 							<div className="flex flex-col">
 								<div className="flex flex-col items-center">
-									<img src={`${process.env.baseURL}/${event.img_url}`} className="w-40 h-40 bg-gray-300 rounded-full mb-4 shrink-0" />
+									<img src={`${event.img_url}`} className="w-40 h-40 bg-gray-300 rounded-full mb-4 shrink-0" />
 									{/* <div className="mt-4 flex flex-wrap gap-4 justify-center">
 										location text
 									</div> */}

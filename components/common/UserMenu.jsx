@@ -24,7 +24,7 @@ function UserMenu({ user, handleShow, menu }) {
         <div className={`z-50 ${menu ? '' : 'hidden'} absolute top-5 right-2 my-4 text-base list-none bg-white rounded-lg shadow`}>
           <p className='px-4 py-3 mt text-xs'>Currently in</p>
           <div className="px-4 py-3 flex flex-row gap-4 w-[250px]">
-            <img className="w-10 h-10 rounded-full" src={`${process.env.baseURL}/${user.img_url}`} alt="user avatar" />
+            <img className="w-10 h-10 rounded-full" src={`${user.img_url}`} alt="user avatar" />
             <div className=''>
               <span className="block font-bold">{user.first_name} {user.last_name}</span>
               <span className="block text-sm text-gray-500">{user.email}</span>

@@ -5,14 +5,12 @@ import { formatDate } from '../../lib/utils'
 function Card({ data }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg relative h-[380px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-      <div className="bg-[#9CC0FA] rounded-t-lg relative">
+      <div className="bg-[#9CC0FA] rounded-t-lg relative h-[180px]">
         <div className='px-3 py-1 bg-gray-600 text-white font-bold top-2 right-2 rounded-lg absolute opacity-80'>{data.total_price} €</div>
-        <img className="object-fill rounded-t-lg h-[200px] mx-auto" src={`${process.env.baseURL}/${data.img_url}`} alt="" />
+        <img className="object-cover rounded-t-lg w-full h-full mx-auto" src={`${data.img_url}`} alt="" />
       </div>
       <div className="p-5">
-          <a href="#">
-              <h5 className="mb-2 text-2xl font-bold tracking-tight">{data.title}</h5>
-          </a>
+          <h5 className="mb-2 text-2xl font-bold tracking-tight">{data.title}</h5>
           <div className='flex gap-2 items-center text-gray-600 mb-1'>
             <CalendarDays />
             <p className="font-normal">{formatDate(data.event_date)} </p>

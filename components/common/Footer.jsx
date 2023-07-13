@@ -2,7 +2,7 @@ import { GitLogo, LinkedInLogo } from "./Icons"
 
 function Footer() {
   return (
-    <footer className="bg-white absolute inset-x-0 bottom-0">        
+    <footer className="bg-white mt-10 md:absolute inset-x-0 bottom-0">        
       <div className="px-1 sm:px-4 py-6 w-full bg-[#E9EFFF] flex flex-col sm:flex-row text-center items-center sm:justify-between">
         <p className="text-sm text-text sm:text-center">© 2023 <a href="#">EventSync</a></p>
         <div className="flex gap-4">

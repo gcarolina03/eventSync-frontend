@@ -3,7 +3,7 @@ import { Clock, Pencil, ThumbsDown, ThumbsDownFill, ThumbsUp, ThumbsUpFill, User
 import { GiveReviewAPI, UpdateReviewAPI } from '../../services/review.service'
 import { useRouter } from 'next/router'
 
-function Card({ data, edit, editMode, user, update }) {
+function Card({ data, edit, editMode, user, update, requestTo}) {
   const router = useRouter()
   
   //  REVIEWS COUNT
@@ -16,7 +16,6 @@ function Card({ data, edit, editMode, user, update }) {
   }
   dataReview.forEach((review) => {
     (review.thumb === 'up') ? reviews.up++ : reviews.down++
-    console.log(review.thumb == 'up')
     if (user && review.userId === user._id && review.thumb === 'up') { reviews.userUp = true }
     if (user && review.userId === user._id && review.thumb === 'down') { reviews.userDown = true }
   })
@@ -65,7 +64,7 @@ function Card({ data, edit, editMode, user, update }) {
         }
       </div>
       <div>
-        <div className="absolute right-4 bottom-3 cursor-pointer inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">
+        <div onClick={() => requestTo(data)} className="absolute right-4 bottom-3 cursor-pointer inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">
           Request
         </div>
       </div>
@@ -94,6 +93,7 @@ Card.propTypes = {
   editMode: PropTypes.bool,
   user: PropTypes.object,
   update: PropTypes.func,
+  requestTo: PropTypes.func,
 }
 
 export default Card

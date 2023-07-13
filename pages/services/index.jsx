@@ -5,14 +5,19 @@ import { Camera, Couch, FaceSmile, Food, GroupPeople, Map, Production } from '..
 import Card from '../../components/services/Card'
 import NoServices from '../../components/services/NoServices'
 import { GetProfileAPI } from '../../services/user.service'
+import SelectEventForm from '../../components/requests/SelectEventForm'
+import Blur from '../../components/common/Blur'
+import { useRouter } from 'next/router'
 
 function ServicesDashboard() {
+  const router = useRouter()
   const [activeCategory, setActiveCategory] = useState('all')
   const [services, setServices] = useState('')
   const [categoryList, setCategoryList] = useState('')
   const [flag, setFlag] = useState(false)
   const [userLog, setUserLog] = useState(null)
-
+  const [showForm, setShowForm] = useState(false)
+  const [serviceTo, setServiceTo] = useState('')
   const icons = {
     Production: <Production />,
     Couch: <Couch />,
@@ -23,8 +28,21 @@ function ServicesDashboard() {
     Map: <Map />
   }
 
+  const handleForm = () => {
+    setShowForm(!showForm)
+  }
+
   const handleFlag = () => {
     setFlag(!flag)
+  }
+
+  const handleServiceTo = (data) => {
+    if(userLog) {
+      setServiceTo(data)
+      setShowForm(!showForm)
+    } else {
+      router.push('/login')
+    }
   }
 
   // CHECK IF USER LOG
@@ -58,7 +76,6 @@ function ServicesDashboard() {
     getServices()
     GetProfile()
   }, [flag])
-  console.log(userLog)
 
   // SELECT CATEGORY
    const handleCategorySelect = (category) => {
@@ -67,13 +84,11 @@ function ServicesDashboard() {
 
   // FILTER DATA
    const filterServices = () => {
-    console.log(services)
     let dataFilter = services 
     if(activeCategory !== 'all') {
       dataFilter = dataFilter.filter((service) => service.categoryId._id === activeCategory )
     }
     
-    console.log(activeCategory)
     return dataFilter 
   }
 
@@ -88,14 +103,14 @@ function ServicesDashboard() {
               <div onClick={() => handleCategorySelect('all')} className="border border-gray-200 cursor-pointer hover:bg-gray-100 text-gray-700 font-bold py-2 px-4 rounded">Clear all</div>
             </div>
             <div className="flex w-full flex-col gap-2 mt-6 text-lg">
-                <ul>
-                  {categoryList.length > 0 && 
-                  categoryList.map((category) => (
-                    <li onClick={() => handleCategorySelect(category._id)} className={`py-5 font-semibold border-b-2 hover:bg-gray-100 flex gap-6 items-center px-6 ${activeCategory == category._id ? 'bg-gray-100' : 'cursor-pointer'}`} key={category._id}>
-                      {icons[category.icon]} {category.title}</li>
-                  ))
-                  }
-                </ul>
+              <ul>
+                {categoryList.length > 0 && 
+                categoryList.map((category) => (
+                  <li onClick={() => handleCategorySelect(category._id)} className={`py-5 font-semibold border-b-2 hover:bg-gray-100 flex gap-6 items-center px-6 ${activeCategory == category._id ? 'bg-gray-100' : 'cursor-pointer'}`} key={category._id}>
+                    {icons[category.icon]} {category.title}</li>
+                ))
+                }
+              </ul>
             </div>
           </div>
         </div>
@@ -108,12 +123,15 @@ function ServicesDashboard() {
               <NoServices />
             ) : (
               filterServices().map((service) => (
-                <Card key={service._id} data={service} update={handleFlag} user={userLog}/>
+                <Card key={service._id} data={service} update={handleFlag} user={userLog} requestTo={handleServiceTo}/>
               ))
             )}
           </div>
         </div>
       </div>
+      {showForm &&
+          <Blur form={ <SelectEventForm handleForm={handleForm} service={serviceTo}/>} />
+        }
     </div>
   )
 }

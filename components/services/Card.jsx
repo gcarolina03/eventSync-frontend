@@ -7,18 +7,22 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
   const router = useRouter()
   
   //  REVIEWS COUNT
-  const dataReview = data.serviceReviews
-  const reviews = {
-    up: 0,
-    down: 0,
-    userUp: false,
-    userDown: false
+  const reviewsCount = () => {
+    const dataReview = data.serviceReviews
+    const reviews = {
+      up: 0,
+      down: 0,
+      userUp: false,
+      userDown: false
+    }
+    dataReview.forEach((review) => {
+      (review.thumb === 'up') ? reviews.up++ : reviews.down++
+      if (user && review.userId === user._id && review.thumb === 'up') { reviews.userUp = true }
+      if (user && review.userId === user._id && review.thumb === 'down') { reviews.userDown = true }
+    })
+
+    return reviews
   }
-  dataReview.forEach((review) => {
-    (review.thumb === 'up') ? reviews.up++ : reviews.down++
-    if (user && review.userId === user._id && review.thumb === 'up') { reviews.userUp = true }
-    if (user && review.userId === user._id && review.thumb === 'down') { reviews.userDown = true }
-  })
   
   const giveReviewService =  async (thumb, service) => {
     if(user) {
@@ -37,7 +41,7 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
     <div className="bg-white border border-gray-200 rounded-lg relative h-[400px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div className="bg-[#9CC0FA] rounded-t-lg relative h-[180px]">
         {editMode &&
-          <div onClick={() => edit(data)} className="cursor-pointer absolute top-[-10px] left-[-10px] gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4">
+          <div onClick={() => edit(data)} className="cursor-pointer z-10 absolute top-[-10px] left-[-10px] gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4">
             <Pencil /> 
           </div>
         }
@@ -72,15 +76,15 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
       <div className='absolute bottom-3 left-5 flex gap-4'>
         <div onClick={() => giveReviewService('up', data._id)} className={`text-green-600 gap-1 font-bold flex text-lg items-center ${user && 'cursor-pointer'}`}>
           {user &&
-            (reviews.userUp) ? <ThumbsUpFill /> : <ThumbsUp />
+            (reviewsCount().userUp) ? <ThumbsUpFill /> : <ThumbsUp />
           || <ThumbsUp />}
-          <span> {reviews.up}</span>
+          <span> {reviewsCount().up}</span>
         </div>
         <div onClick={() => giveReviewService('down', data._id)} className={`text-red-600 gap-1 font-bold flex text-lg items-center ${user && 'cursor-pointer'}`}>
           {user &&
-            (reviews.userDown) ? <ThumbsDownFill /> : <ThumbsDown />
+            (reviewsCount().userDown) ? <ThumbsDownFill /> : <ThumbsDown />
           || <ThumbsDown />}
-          <span> {reviews.down}</span>
+          <span> {reviewsCount().down}</span>
         </div>
       </div>
     </div>

@@ -41,6 +41,8 @@ function ResumeEvent() {
     }
   }
 
+	console.log(event)
+
   return (
     event !== '' && (
 			<div className='w-full h-full px-8 pt-10'>

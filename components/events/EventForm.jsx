@@ -55,7 +55,6 @@ function EventForm({ handleForm, event }) {
   // CREATE EVENT SERVICE
   const CreateEventService = async () => {
     const res = await CreateEventAPI(title, date, start, end)
-    console.log(res)
     if (res) {
       window.location.href = window.location.href
     }

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { ArrowRight, CalendarDays, Clock, User } from '../common/Icons'
 import Link from 'next/link'
 import { formatDate } from '../../lib/utils'
+
 function Card({ data }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg relative h-[400px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">

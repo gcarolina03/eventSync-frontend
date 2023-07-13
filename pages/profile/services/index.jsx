@@ -5,6 +5,7 @@ import { GetServicesAPI } from "../../../services/myservices.service"
 import Blur from "../../../components/common/Blur"
 import ServicesForm from "../../../components/services/ServicesForm"
 import Card from "../../../components/services/Card"
+import Link from "next/link"
 
 function MyServices() {
   const [services, setServices] = useState([])
@@ -43,11 +44,9 @@ function MyServices() {
             <div onClick={handleEdit} className={`cursor-pointer flex items-center px-6 h-9 text-white font-bold text-center ${editMode ? 'bg-green-400 hover:bg-green-600' : 'bg-gray-400 hover:bg-gray-600'}  rounded-lg`}>
               {editMode ? 'Done' : 'Edit'}
             </div>
-
-            <div className="cursor-pointer flex items-center px-6 h-9 text-white font-bold text-center bg-[#1CA987] rounded-lg hover:bg-[#23826B]">
+            <Link href='/profile/requests' className="flex items-center px-6 h-9 text-white font-bold text-center bg-[#1CA987] rounded-lg hover:bg-[#23826B]">
               Requests
-            </div>
-
+            </Link>
           </div>
         </div>
         <hr className="m4-5 h-0.5 border-t-0 bg-gray-500 opacity-20" />

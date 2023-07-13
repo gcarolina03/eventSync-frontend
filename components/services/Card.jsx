@@ -1,9 +1,39 @@
 import PropTypes from 'prop-types'
-import { ArrowRight, CalendarDays, Clock, Pencil, ThumbsDown, ThumbsUp, User } from '../common/Icons'
-import Link from 'next/link'
-import { formatDate } from '../../lib/utils'
+import { Clock, Pencil, ThumbsDown, ThumbsDownFill, ThumbsUp, ThumbsUpFill, User } from '../common/Icons'
+import { GiveReviewAPI, UpdateReviewAPI } from '../../services/review.service'
+import { useRouter } from 'next/router'
 
-function Card({ data, edit, editMode }) {
+function Card({ data, edit, editMode, user, update }) {
+  const router = useRouter()
+  
+  //  REVIEWS COUNT
+  const dataReview = data.serviceReviews
+  const reviews = {
+    up: 0,
+    down: 0,
+    userUp: false,
+    userDown: false
+  }
+  dataReview.forEach((review) => {
+    (review.thumb === 'up') ? reviews.up++ : reviews.down++
+    console.log(review.thumb == 'up')
+    if (user && review.userId === user._id && review.thumb === 'up') { reviews.userUp = true }
+    if (user && review.userId === user._id && review.thumb === 'down') { reviews.userDown = true }
+  })
+  
+  const giveReviewService =  async (thumb, service) => {
+    if(user) {
+      const res = await GiveReviewAPI(service, thumb)
+      if(res.hasOwnProperty("reviewId")) {
+        await UpdateReviewAPI(res.reviewId, thumb)
+        router.push('/services')
+      } else {
+        router.push('/services')
+      }
+      update()
+    }
+  }
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg relative h-[400px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div className="bg-[#9CC0FA] rounded-t-lg relative h-[180px]">
@@ -39,14 +69,18 @@ function Card({ data, edit, editMode }) {
           Request
         </div>
       </div>
-      <div className='absolute bottom-3 left-5 flex gap-2'>
-        <div className='text-green-600 cursor-pointer font-bold flex text-lg items-center'>
-          <ThumbsUp />
-          <span> &nbsp;0</span>
+      <div className='absolute bottom-3 left-5 flex gap-4'>
+        <div onClick={() => giveReviewService('up', data._id)} className={`text-green-600 gap-1 font-bold flex text-lg items-center ${user && 'cursor-pointer'}`}>
+          {user &&
+            (reviews.userUp) ? <ThumbsUpFill /> : <ThumbsUp />
+          || <ThumbsUp />}
+          <span> {reviews.up}</span>
         </div>
-        <div className='text-red-600 cursor-pointer font-bold flex text-lg items-center'>
-          <ThumbsDown />
-          <span> &nbsp;0</span>
+        <div onClick={() => giveReviewService('down', data._id)} className={`text-red-600 gap-1 font-bold flex text-lg items-center ${user && 'cursor-pointer'}`}>
+          {user &&
+            (reviews.userDown) ? <ThumbsDownFill /> : <ThumbsDown />
+          || <ThumbsDown />}
+          <span> {reviews.down}</span>
         </div>
       </div>
     </div>
@@ -57,6 +91,9 @@ function Card({ data, edit, editMode }) {
 Card.propTypes = {
   data: PropTypes.object,
   edit: PropTypes.func,
+  editMode: PropTypes.bool,
+  user: PropTypes.object,
+  update: PropTypes.func,
 }
 
 export default Card

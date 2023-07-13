@@ -65,10 +65,6 @@ function ServicesDashboard() {
     setCategoryList(res.data)
   }
 
-  const handleCategory = (e) => {
-    setCategory(e.target.value)
-  }
-
   // GET DATA
   useState(() => {
     console.log('Flag changed:', flag);

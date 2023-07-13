@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { DeleteEventAPI, GetEventAPI } from "../../../services/event.service"
 import { useRouter } from 'next/router'
-import { CalendarDays, Card, CirclePlus, Clock, Pencil, TrashCan, User } from "../../../components/common/Icons"
+import { CalendarDays, Card, Clock, Pencil, Search, TrashCan, User } from "../../../components/common/Icons"
 import AddItem from "../../../components/common/AddItem"
 import Blur from "../../../components/common/Blur"
 import EventForm from "../../../components/events/EventForm"
 import { formatDate } from "../../../lib/utils"
 import DeleteAlert from "../../../components/events/DeleteAlert"
+import CardRequest from "../../../components/requests/Card"
 
 function ResumeEvent() {
   const router = useRouter()
@@ -41,7 +42,17 @@ function ResumeEvent() {
     }
   }
 
-	console.log(event)
+	// PRICE
+	const totalPrice = () => {
+    const dataRequests = event.eventRequests
+    let price = 0
+    dataRequests.forEach((request) => {
+      if (request.state === 'confirmed') price += request.serviceId.price 
+    })
+
+    return price
+  }
+
 
   return (
     event !== '' && (
@@ -97,7 +108,7 @@ function ResumeEvent() {
 									<Card />
 									Total: 
 								</p>
-								<p className=" right-0 font-bold">{event.total_price} €</p>
+								<p className=" right-0 font-bold">{totalPrice()} €</p>
 							</div>
 						</div>
 					</div>
@@ -110,9 +121,14 @@ function ResumeEvent() {
         		<div className='mt-4 flex flex-wrap gap-8'>
 							<AddItem 
 								text='Search Service.' 
-								icon={ <CirclePlus className='fill-gray-500 mb-4' height='120' /> }
+								icon={ <Search className='fill-gray-500 mb-4 h-[150px]' /> }
 								onClick={() => { router.push('/services') }}
 							/>
+							{event.eventRequests.length > 0 &&
+								event.eventRequests.map((request) => (
+									<CardRequest request={request}/>
+								))
+							}
 						</div>
 					</div>
 				</div>

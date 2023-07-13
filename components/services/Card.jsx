@@ -41,7 +41,8 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
             <Pencil /> 
           </div>
         }
-        <div className='px-3 text-sm py-1 bg-gray-600 text-white font-bold top-2 right-2 rounded-lg absolute opacity-80'>{data.categoryId.title}</div>
+        <div className='px-3 text-sm py-1 bg-gray-600 text-white font-bold top-2 left-2 rounded-lg absolute opacity-80'>{data.categoryId.title}</div>
+        <div className='px-3 text-lg py-1 bg-neutral-100 text-black font-bold bottom-2 right-2 rounded-lg absolute opacity-80'>{data.price} €</div>
         <img className="rounded-t-lg w-full h-full object-cover mx-auto" src={`${data.img_url}`} alt="" />
       </div>
       <div className="p-5">

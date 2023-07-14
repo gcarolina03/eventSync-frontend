@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react"
 import { DeleteEventAPI, GetEventAPI } from "../../../services/event.service"
 import { useRouter } from 'next/router'
-import { CalendarDays, Card, Clock, Pencil, Search, TrashCan, User } from "../../../components/common/Icons"
-import AddItem from "../../../components/common/AddItem"
+import { CalendarDays, Card, Clock, Pencil, TrashCan, User } from "../../../components/common/Icons"
 import Blur from "../../../components/common/Blur"
 import EventForm from "../../../components/events/EventForm"
-import { formatDate } from "../../../lib/utils"
 import DeleteAlert from "../../../components/events/DeleteAlert"
-import CardRequest from "../../../components/requests/Card"
+import ResumeServices from "../../../components/events/ResumeServices"
+import { formatDate } from "../../../lib/utils"
+import GuestList from "../../../components/events/GuestList/GuestList"
+import FormGuest from "../../../components/events/GuestList/FormGuets"
 
 function ResumeEvent() {
   const router = useRouter()
@@ -16,6 +17,7 @@ function ResumeEvent() {
   const [event, setEvent] = useState('')
 	const [showEditForm, setShowEditForm] = useState(false)
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+	const [showGuestList, setShowGuestList] = useState(false)
 
   const getEvent = async () => {
     const res = await GetEventAPI(eventId)
@@ -34,6 +36,11 @@ function ResumeEvent() {
 		setShowDeleteConfirm(!showDeleteConfirm)
 	}
 
+	const handleGuestList= () => {
+		setShowGuestList(!showGuestList)
+		console.log(showGuestList)
+	}
+
 	// DELETE EVENT SERVICE
   const DeleteEventService = async () => {
     const res = await DeleteEventAPI(eventId)
@@ -48,11 +55,22 @@ function ResumeEvent() {
 				<div className="flex gap-8 items-center justify-between ">
 					<p className='font-bold text-[30px]'>{event.title}</p>
 					<div className="flex gap-2">
-						<div className="cursor-pointer flex items-center px-4 h-8 py-2 text-sm font-bold text-center bg-[#ADE0E4] rounded-lg hover:bg-[#79AEB1]">
-							Guest List
-						</div>
-						<Pencil onClick={handleEditForm} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4" />     
-						<TrashCan onClick={handleDelete} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-red-300 hover:bg-red-400 text-red-700 px-4" />     
+						{!showGuestList && (
+							<>
+								<div onClick={handleGuestList} className="cursor-pointer flex items-center px-4 h-8 py-2 text-sm font-bold text-center bg-[#ADE0E4] rounded-lg hover:bg-[#79AEB1]">
+									Guest List
+								</div>
+								<Pencil onClick={handleEditForm} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4" />     
+								<TrashCan onClick={handleDelete} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-red-300 hover:bg-red-400 text-red-700 px-4" />     
+							</>
+						) || (
+							<>
+								<div onClick={handleGuestList} className="cursor-pointer flex items-center px-4 h-8 py-2 text-sm font-bold text-center bg-[#ADE0E4] rounded-lg hover:bg-[#79AEB1]">
+									Go Back
+								</div>
+								<Pencil className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4" /> 
+							</>
+						)}
 					</div>
 				</div>
 				<hr className="my-5 h-0.5 border-t-0 bg-gray-500 opacity-20" />
@@ -66,7 +84,7 @@ function ResumeEvent() {
 									<div className="mt-2flex flex-wrap gap-4 text-center">
 										{event.eventRequests.map((request) => {
 											if (request.serviceId.categoryId.title === 'Location') 
-												return <span>{request.serviceId.cityId.postal_code}&nbsp; • &nbsp; {request.serviceId.cityId.name}</span>
+												return <span key={request._id}>{request.serviceId.cityId.postal_code}&nbsp; • &nbsp; {request.serviceId.cityId.name}</span>
 											}
 										)}
 									</div>
@@ -91,7 +109,7 @@ function ResumeEvent() {
 											<User />
 											Guests
 										</p>
-										<p className="font-bold">0</p>
+										<p className="font-bold">{event.guestList.reduce((acc, curr) => { return acc + curr.number }, 0)}</p>
 									</div>
 								</div>
 							</div>
@@ -104,25 +122,15 @@ function ResumeEvent() {
 							</div>
 						</div>
 					</div>
-					{/* SERVICES AREA */}
 					<div className="col-span-4 relative sm:col-span-9 xl:col-span-10 p-6 pl-6 sm:pl-20">
-						<div className="h-full min-h-[1em] hidden sm:block absolute left-0 w-px self-stretch bg-gradient-to-tr from-transparent via-gray-500 to-transparent opacity-20"></div>
-						<div className="flex justify-between">
-							<h2 className="text-2xl font-bold mb-4">Services</h2>
-						</div>
-        		<div className='mt-4 flex flex-wrap gap-8'>
-							<AddItem 
-								text='Search Service.' 
-								icon={ <Search className='fill-gray-500 mb-4 h-[150px]' /> }
-								onClick={() => { router.push('/services') }}
-							/>
-							{event.eventRequests.length > 0 &&
-								event.eventRequests.map((request) => (
-									<CardRequest request={request}/>
-								))
-							}
-						</div>
+          <div className="h-full min-h-[1em] hidden sm:block absolute left-0 w-px self-stretch bg-gradient-to-tr from-transparent via-gray-500 to-transparent opacity-20"></div>
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">{!showGuestList ? 'Services' : 'Guest List'} </h2>
+						{showGuestList && <FormGuest event={event._id} />}
+          </div>
+						{!showGuestList ? <ResumeServices event={event} /> : <GuestList list={event.guestList} />}
 					</div>
+					
 				</div>
 				{showEditForm &&
           <Blur form={ <EventForm handleForm={handleEditForm} event={event} />} />

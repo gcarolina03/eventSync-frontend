@@ -155,7 +155,7 @@ function Requests() {
                               {formatDate(request.eventId.event_date)}
                             </td>
                             <td className="px-4 py-4">
-                              0
+                              {request.eventId.guestList.reduce((acc, curr) => { return acc + curr.number }, 0)}
                             </td>
                             <td className="px-4 py-4">
                               {request.eventId.userId.first_name} {request.eventId.userId.last_name}

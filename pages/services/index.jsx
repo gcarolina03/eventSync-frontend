@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GetCategoriesAPI } from '../../services/category.services'
 import { GetServicesAPI } from '../../services/services.service'
 import { Camera, Couch, FaceSmile, Food, GroupPeople, Map, Production } from '../../components/common/Icons'
@@ -14,7 +14,7 @@ function ServicesDashboard() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [services, setServices] = useState('')
   const [categoryList, setCategoryList] = useState('')
-  const [flag, setFlag] = useState(false)
+  const [reload, setReload] = useState(false)
   const [userLog, setUserLog] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [serviceTo, setServiceTo] = useState('')
@@ -32,8 +32,8 @@ function ServicesDashboard() {
     setShowForm(!showForm)
   }
 
-  const handleFlag = () => {
-    setFlag(!flag)
+  const handleReload = () => {
+    setReload(true)
   }
 
   const handleServiceTo = (data) => {
@@ -66,12 +66,15 @@ function ServicesDashboard() {
   }
 
   // GET DATA
-  useState(() => {
-    console.log('Flag changed:', flag);
+  useEffect(() => {
     GetCategoriesList()
-    getServices()
     GetProfile()
-  }, [flag])
+  }, [])
+
+  useEffect(() => {
+    getServices()
+    setReload(false)
+  }, [reload])
 
   // SELECT CATEGORY
    const handleCategorySelect = (category) => {
@@ -119,7 +122,7 @@ function ServicesDashboard() {
               <NoServices />
             ) : (
               filterServices().map((service) => (
-                <Card key={service._id} data={service} update={handleFlag} user={userLog} requestTo={handleServiceTo}/>
+                <Card key={service._id} data={service} update={handleReload} user={userLog} requestTo={handleServiceTo}/>
               ))
             )}
           </div>

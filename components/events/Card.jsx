@@ -24,7 +24,7 @@ function Card({ data }) {
 
           <div className='flex gap-2 items-center text-gray-600'>
             <User />
-            <p className="font-normal">0</p>
+            <p className="font-normal">{data.guestList.reduce((acc, curr) => { return acc + curr.number }, 0)}</p>
           </div>
       </div>
       <Link href={`/events/${data._id}`} className="absolute right-4 bottom-4 inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">

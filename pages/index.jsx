@@ -7,12 +7,12 @@ import Card from "../components/services/Card"
 import Link from "next/link"
 import { GetEventsAPI } from "../services/event.service"
 import { GetProfileAPI } from "../services/user.service"
+import NoServices from "../components/services/NoServices"
 
 export default function Home() {
   const [categoryList, setCategoryList] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
   const [services, setServices] = useState('')
-  const [userLog, setUserLog] = useState(null)
   const [events, setEvents] = useState('')
 
   const icons = {
@@ -56,7 +56,7 @@ export default function Home() {
   const GetProfile = async () => {
     const res = await GetProfileAPI()
     if (res) {
-      setUserLog(res)
+      getEvents()
     }
   }
 
@@ -73,10 +73,6 @@ export default function Home() {
     GetProfile()
   }, [])
 
-  useEffect(() => {
-    getEvents()
-  }, [userLog])
-
   return (
     <>
     <div className='w-full h-full relative px-8 pt-10'>
@@ -90,16 +86,17 @@ export default function Home() {
         ))
         }
       </ul>
-      {services.length > 0 &&
-      <>
-        <Carousel data={services} type='services' />
+      {filterServices().length === 0 && (
+        <NoServices />
+      ) || (
+        <Carousel data={filterServices()} type='services' />
+      )
+      }
         <div className="w-full flex justify-center">
           <Link href='/services' className=" inline-flex items-center px-6 py-4 gap-2 text-md font-bold text-center text-white bg-dark rounded-lg hover:bg-[#201B4F] focus:ring-4 focus:outline-none focus:ring-[#201B4F">
             View all services <ArrowRight />
           </Link>
         </div>
-      </>
-      }
 
       {events.length > 0 && 
         <>

@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
 import { Clock, Pencil, ThumbsDown, ThumbsDownFill, ThumbsUp, ThumbsUpFill, User } from '../common/Icons'
 import { GiveReviewAPI, UpdateReviewAPI } from '../../services/review.service'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 function Card({ data, edit, editMode, user, update, requestTo}) {
   const router = useRouter()
-  
+  const currentPage = router.pathname
+
   //  REVIEWS COUNT
   const reviewsCount = () => {
     const dataReview = data.serviceReviews
@@ -29,11 +30,10 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
       const res = await GiveReviewAPI(service, thumb)
       if(res.hasOwnProperty("reviewId")) {
         await UpdateReviewAPI(res.reviewId, thumb)
-        router.push('/services')
+        update()
       } else {
-        router.push('/services')
+        update()
       }
-      update()
     }
   }
 
@@ -69,9 +69,11 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
         }
       </div>
       <div>
-        <div onClick={() => requestTo(data)} className="absolute right-4 bottom-3 cursor-pointer inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">
-          Request
-        </div>
+        {currentPage === '/services' && 
+          <div onClick={() => requestTo(data)} className="absolute right-4 bottom-3 cursor-pointer inline-flex items-center px-3 py-2 text-sm font-bold text-center text-white bg-light rounded-lg hover:bg-dark focus:ring-4 focus:outline-none focus:ring-dark">
+            Request
+          </div>
+        }
       </div>
       <div className='absolute bottom-3 left-5 flex gap-4'>
         <div onClick={() => giveReviewService('up', data._id)} className={`text-green-600 gap-1 font-bold flex text-lg items-center ${user && 'cursor-pointer'}`}>

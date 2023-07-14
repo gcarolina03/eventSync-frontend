@@ -8,7 +8,7 @@ import DeleteAlert from "../../../components/events/DeleteAlert"
 import ResumeServices from "../../../components/events/ResumeServices"
 import { formatDate } from "../../../lib/utils"
 import GuestList from "../../../components/events/GuestList/GuestList"
-import FormGuest from "../../../components/events/GuestList/FormGuets"
+import FormGuest from "../../../components/events/GuestList/FormGuest"
 
 function ResumeEvent() {
   const router = useRouter()
@@ -18,6 +18,8 @@ function ResumeEvent() {
 	const [showEditForm, setShowEditForm] = useState(false)
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 	const [showGuestList, setShowGuestList] = useState(false)
+	const [shouldReload, setShouldReload] = useState(false);
+
 
   const getEvent = async () => {
     const res = await GetEventAPI(eventId)
@@ -26,7 +28,12 @@ function ResumeEvent() {
 
   useEffect(() => {
     getEvent()
-  }, [])
+		setShouldReload(false)
+  }, [shouldReload])
+
+	const handleReload = () => {
+		setShouldReload(true)
+	}
 
 	const handleEditForm = () => {
 		setShowEditForm(!showEditForm)
@@ -38,7 +45,6 @@ function ResumeEvent() {
 
 	const handleGuestList= () => {
 		setShowGuestList(!showGuestList)
-		console.log(showGuestList)
 	}
 
 	// DELETE EVENT SERVICE
@@ -126,7 +132,7 @@ function ResumeEvent() {
           <div className="h-full min-h-[1em] hidden sm:block absolute left-0 w-px self-stretch bg-gradient-to-tr from-transparent via-gray-500 to-transparent opacity-20"></div>
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold">{!showGuestList ? 'Services' : 'Guest List'} </h2>
-						{showGuestList && <FormGuest event={event._id} />}
+						{showGuestList && <FormGuest event={event._id} reload={handleReload}  />}
           </div>
 						{!showGuestList ? <ResumeServices event={event} /> : <GuestList list={event.guestList} />}
 					</div>

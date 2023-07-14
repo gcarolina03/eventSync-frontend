@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { UpdateGuestListAPI } from '../../../services/event.service'
+import PropTypes from 'prop-types'
 
-function FormGuest({ event }) {
+
+function FormGuest({ event, reload }) {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [number, setNumber] = useState(0)
@@ -20,6 +22,9 @@ function FormGuest({ event }) {
 
   const addToList = async () => {
     const res = await UpdateGuestListAPI(event, name, phone, number)
+    if (res) {
+      reload()
+    }
   }
 
   const submitGuest = (e) => {
@@ -37,6 +42,12 @@ function FormGuest({ event }) {
       <button type="submit" className="text-white bg-primary hover:bg-dark focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2">Add</button>
     </form>
   )
+}
+
+// props validation
+FormGuest.propTypes = {
+  event: PropTypes.object,
+  reload: PropTypes.func
 }
 
 export default FormGuest

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types'
 
 function GuestList({ list }) {
-  console.log(list)
   return (
     <>
       {/* GUEST LIST AREA */}

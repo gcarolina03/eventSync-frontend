@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { ArrowUpAndDown, Search } from '../../../components/common/Icons'
-import { GetRequestsAPI } from '../../../services/request.service'
+import { ArrowUpAndDown, Check, Search, XMark } from '../../../components/common/Icons'
+import { GetRequestsAPI, UpdateRequestAPI } from '../../../services/request.service'
 import { formatDate } from '../../../lib/utils'
 
 function Requests() {
@@ -45,6 +45,13 @@ function Requests() {
     getRequests()
   }, [])
 
+  const updateState = async (id, state) => {
+    const res = await UpdateRequestAPI(id, state)
+    if (res) {
+      location.reload()
+    }
+  }
+
   return (
     <>
       <div className='w-full h-full relative px-8 pt-10'>
@@ -59,25 +66,25 @@ function Requests() {
                   <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
                     <div className="flex items-center px-3">
                       <input  onChange={handleStateSelect}  id="all-list" type="radio" value="all" name="list-state" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" checked={stateToShow === 'all' ? true : false} />
-                      <label for="all-list" className="w-full py-3 ml-2 font-semibold text-gray-900">All</label>
+                      <label htmlFor="all-list" className="w-full py-3 ml-2 font-semibold text-gray-900">All</label>
                     </div>
                   </li>
                   <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
                     <div className="flex items-center px-3">
                       <input onChange={handleStateSelect} id="confirmed-list" type="radio" value="confirmed" name="list-state" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" checked={stateToShow === 'confirmed' ? true : false} />
-                      <label for="confirmed-list" className="w-full py-3 ml-2 font-semibold text-gray-900">Confirmed</label>
+                      <label htmlFor="confirmed-list" className="w-full py-3 ml-2 font-semibold text-gray-900">Confirmed</label>
                     </div>
                   </li>
                   <li className="w-full border-b border-gray-200 sm:border-b-0 sm:border-r">
                     <div className="flex items-center px-3">
                       <input onChange={handleStateSelect} id="pending-list" type="radio" value="pending" name="list-state" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" checked={stateToShow === 'pending' ? true : false} />
-                      <label for="pending-list" className="w-full py-3 ml-2 font-semibold text-gray-900" >Pending</label>
+                      <label htmlFor="pending-list" className="w-full py-3 ml-2 font-semibold text-gray-900" >Pending</label>
                     </div>
                   </li>
                   <li className="w-full">
                     <div className="flex items-center px-3">
                       <input onChange={handleStateSelect} id="cancelled-list" type="radio" value="cancelled" name="list-state" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300" checked={stateToShow === 'cancelled' ? true : false} />
-                      <label for="cancelled-list" className="w-full py-3 ml-2 font-semibold text-gray-900">Cancelled</label>
+                      <label htmlFor="cancelled-list" className="w-full py-3 ml-2 font-semibold text-gray-900">Cancelled</label>
                     </div>
                   </li>
                 </ul>
@@ -130,34 +137,44 @@ function Requests() {
                   <tbody>
                       {sortAndFilter().length === 0 ? (
                         <tr className="bg-white border-b hover:bg-gray-50">
-                          <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap"> No requests to show </th>
+                          <th scope="row" colSpan='8' className="px-6 py-4 text-center font-bold text-gray-900 whitespace-nowrap"> No requests to show </th>
                         </tr>
                       ) : (
                         sortAndFilter().map((request) => (
-                          <tr className="bg-white border-b hover:bg-gray-50">
+                          <tr key={request._id} className="bg-white border-b hover:bg-gray-50">
                             <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap">
                               {request.serviceId.title}
                             </th>
-                            <td className="px-6 py-4">
+                            <td className="px-4 py-4">
                               {request.eventId.title}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 py-4">
                               {formatDate(request.date_of_request)}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 py-4">
                               {formatDate(request.eventId.event_date)}
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 py-4">
                               0
                             </td>
-                            <td className="px-6 py-4">
+                            <td className="px-4 py-4">
                               {request.eventId.userId.first_name} {request.eventId.userId.last_name}
                             </td>
-                            <td className="px-6 py-4 flex">
-                              <div className={`flex items-center px-3 py-2 text-sm font-bold text-center text-white rounded-lg focus:outline-none ${request.state === 'pending' ? 'bg-yellow-700' : request.state === 'confirmed' ? 'bg-green-700' : 'bg-red-800'}`}>
-                                {request.state.charAt(0).toUpperCase() + request.state.slice(1)}
+                            <td colSpan={request.state !== 'pending' ? '2' : '1'} className="px-4 py-4">
+                              <div className='flex'>
+                                <div className={`flex items-center px-3 py-2 text-sm font-bold text-center text-white rounded-lg focus:outline-none ${request.state === 'pending' ? 'bg-yellow-700' : request.state === 'confirmed' ? 'bg-green-700' : 'bg-red-800'}`}>
+                                  {request.state.charAt(0).toUpperCase() + request.state.slice(1)}
+                                </div>
                               </div>
                             </td>
+                            {request.state === 'pending' &&
+                              <td className='px-4 py-4'>
+                                <div className='flex gap-2'>
+                                  <Check onClick={() => updateState(request._id, 'confirmed')} className="cursor-pointer h-8 py-2 text-sm rounded-lg font-bold bg-green-300 hover:bg-green-400 text-green-700 px-4" />     
+                                  <XMark onClick={() => updateState(request._id, 'cancelled')} className="cursor-pointer h-8 py-2 text-sm rounded-lg font-bold bg-red-300 hover:bg-red-400 text-red-700 px-4" />  
+                                </div>
+                              </td>
+                            }
                           </tr>
                         ))
                       )

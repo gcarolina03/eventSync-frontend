@@ -25,3 +25,16 @@ export const GetRequestsAPI = async () => {
     console.error('Cannot get requests', error)
   }
 }
+
+export const UpdateRequestAPI = async (id, state) => {
+  try {
+    const { data } = await api.put(`/api/requests/${id}`, { state }, {
+      headers: {
+        token: localStorage.getItem('token')
+      }
+    })
+    return data
+  } catch (error) {
+    console.error('Cannot update requests', error)
+  }
+}

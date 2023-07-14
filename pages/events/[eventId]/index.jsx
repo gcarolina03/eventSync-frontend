@@ -42,18 +42,6 @@ function ResumeEvent() {
     }
   }
 
-	// PRICE
-	const totalPrice = () => {
-    const dataRequests = event.eventRequests
-    let price = 0
-    dataRequests.forEach((request) => {
-      if (request.state === 'confirmed') price += request.serviceId.price 
-    })
-
-    return price
-  }
-
-
   return (
     event !== '' && (
 			<div className='w-full h-full px-8 pt-10'>
@@ -75,9 +63,13 @@ function ResumeEvent() {
 							<div className="flex flex-col">
 								<div className="flex flex-col items-center">
 									<img src={`${event.img_url}`} className="w-40 h-40 bg-gray-300 rounded-full mb-4 shrink-0" />
-									{/* <div className="mt-4 flex flex-wrap gap-4 justify-center">
-										location text
-									</div> */}
+									<div className="mt-2flex flex-wrap gap-4 text-center">
+										{event.eventRequests.map((request) => {
+											if (request.serviceId.categoryId.title === 'Location') 
+												return <span>{request.serviceId.cityId.postal_code}&nbsp; • &nbsp; {request.serviceId.cityId.name}</span>
+											}
+										)}
+									</div>
 								</div>
 								<div className="flex flex-col mt-4 gap-2">
 									<div className='flex gap-2 items-center justify-between text-gray-600 mb-1'>
@@ -108,7 +100,7 @@ function ResumeEvent() {
 									<Card />
 									Total: 
 								</p>
-								<p className=" right-0 font-bold">{totalPrice()} €</p>
+								<p className=" right-0 font-bold">{event.total_price} €</p>
 							</div>
 						</div>
 					</div>

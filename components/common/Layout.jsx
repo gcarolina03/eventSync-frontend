@@ -24,7 +24,7 @@ const Layout = ({ title, children }) => {
     </Head>
     <div id="container" className="min-h-[100vh] bg-[#F8FBFE] relative w-full ">
       <Navbar />
-      <main className="flex h-full w-full items-center justify-center pt-[70px]">
+      <main className="flex h-full w-full items-center justify-center py-[70px]">
         {children}
       </main>
       {path !== '/login' && path !== '/signup' && <Footer />}

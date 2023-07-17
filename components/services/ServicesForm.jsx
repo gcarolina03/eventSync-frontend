@@ -1,24 +1,23 @@
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import ErrorMsg from '../common/ErrorMsg'
 import { ArrowDown, XMark } from '../common/Icons'
 import { useRouter } from 'next/router'
 import { GetCategoriesAPI } from '../../services/category.services'
-import { GetCitiesAPI } from '../../services/city.service'
 import { CreateServiceAPI, UpdateServiceAPI } from '../../services/myservices.service'
+import { StandaloneSearchBox } from '@react-google-maps/api';
+import Maps from '../common/Maps'
 
 function ServicesForm({ handleForm, service }) {
   const router = useRouter()
   // OPTIONS
   const [categoryList, setCategoryList] = useState('')
-  const [cityList, setCityList] = useState('')
   // DATA
   const [avatar, setAvatar] = useState(`uploads/services.jpg`)
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('none')
   const [max, setMax] = useState(0)
   const [min, setMin] = useState(0)
-  const [city, setCity] = useState('none')
   const [start, setStart] = useState('')
   const [end, setEnd] = useState('')
   const [selectedFile, setSelectedFile] = useState(null);
@@ -27,6 +26,29 @@ function ServicesForm({ handleForm, service }) {
   const [errorMsg, setErrorMsg] = useState('')
   const [showError, setShowError] = useState(false)
   const [editStatus, setEditStatus] = useState(false)
+  
+  // MAP
+  const searchBoxRef = useRef(null);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  const handlePlacesChanged = async () => {
+    try {
+      const place = searchBoxRef.current.getPlaces()[0];
+
+      if (place && place.geometry && place.geometry.location) {
+        const { lat, lng } = place.geometry.location;
+        setLatitude(lat());
+        setLongitude(lng());
+      } else {
+        throw new Error('Unable to get place details.');
+      }
+    } catch (error) {
+      setLatitude(null);
+      setLongitude(null);
+    }
+  };
+
 
   // TITLE
   const handleTitle = (e) => {
@@ -84,17 +106,8 @@ function ServicesForm({ handleForm, service }) {
   }
 
   // CITY
-  const GetCitiesList = async () => {
-    const res = await GetCitiesAPI()
-    setCityList(res.data)
-  }
-
-  const handleCity = (e) => {
-    setCity(e.target.value)
-  }
-
   const validationCity = () => {
-    return (city !== 'none')
+    return (latitude !== '' && longitude !== '')
   }
 
   // AVATAR
@@ -124,12 +137,11 @@ function ServicesForm({ handleForm, service }) {
   // GET DATA
   useState(() => {
     GetCategoriesList()
-    GetCitiesList()
   }, [])
 
   // CREATE SERVICE
   const CreateService = async () => {
-    const res = await CreateServiceAPI(title, category, city, max, min, selectedFile, price, start, end)
+    const res = await CreateServiceAPI(title, category, latitude, longitude, max, min, selectedFile, price, start, end)
     if (res) {
       window.location.href = window.location.href 
     }
@@ -261,11 +273,17 @@ function ServicesForm({ handleForm, service }) {
         {category === '64ac73ab173c1b223d20f928' &&
           <>
           {/* ------- MIN AND MAX ------- */}
-            <div className="w-full flex items-center gap-4">
-              <input type="number" value={min} min='1' className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleMin} placeholder="Min Capacity*" />
-              <input type="number" value={max} min='1' className="w-1/2 h-12 border border-gray-800 rounded px-3" onChange={handleMax} placeholder="Max Capacity*" />
+          <div className="flex gap-5">
+            <div className='flex flex-col w-full'>
+              <span className={`m-0 p-0 text-gray-600 text-xs`}>Min capacity*</span>
+              <input type="number" value={min} min='1' className="w-full h-12 border border-gray-800 rounded px-3" onChange={handleMin} placeholder="Min Capacity*" />
             </div>
-            <span className={`m-0 p-0 ${!validationMax() && max !== 0 && min !== 0 ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid capacity.</span>
+            <div className='flex flex-col w-full'>
+              <span className={`m-0 p-0 text-gray-600 text-xs`}>Max capacity*</span>
+              <input type="number" value={max} min='1' className="w-full h-12 border border-gray-800 rounded px-3" onChange={handleMax} placeholder="Max Capacity*" />
+            </div>
+          </div>
+          <span className={`m-0 p-0 ${!validationMax() && max !== 0 && min !== 0 ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid capacity.</span>
           {/* ------- START AND END ------- */}
             <div className="flex gap-5">
               <div className='flex flex-col w-full'>
@@ -280,20 +298,17 @@ function ServicesForm({ handleForm, service }) {
             <span className={`m-0 p-0 ${!validationEnd() && end !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>End time must be after start time.</span>
           </>
         }
-        {/* ------- CITY ------- */}
-        <div className="relative">
-          <select onChange={handleCity} value={city} className={`block appearance-none bg-white focus:outline-none w-full h-12 border border-gray-800 rounded px-3 ${city == 'none' && 'text-gray-400'}`}>
-            <option value="none">Select a city (postal code)</option>
-            {cityList.length > 0 && 
-              cityList.map((city) => (
-                <option key={city._id} value={city._id}>{city.postal_code}</option>
-              )) 
-            }
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-            <ArrowDown className='fill-current h-4 w-4' />
-          </div>
+
+        {/* ------- ADDRESS ------- */}
+        <div>
+          <StandaloneSearchBox onLoad={(ref) => (searchBoxRef.current = ref)} onPlacesChanged={handlePlacesChanged}>
+            <input type="text" className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Enter address" />
+          </StandaloneSearchBox>
+          {latitude && longitude && (
+            <Maps latitude={latitude} longitude={longitude} />
+          )}
         </div>
+        
         {/* ------- PRICE ------- */}
         <input value={price} min='1' className="w-full h-12 border border-gray-800 rounded px-3" type="number" step="0.01" placeholder="Price*" onChange={handlePrice}/>
         <span className={`m-0 p-0 ${!validationPrice() && price !== '' ? 'visible' : 'hidden'} text-red-600 text-xs`}>Please provide a valid price</span>

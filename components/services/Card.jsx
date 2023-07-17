@@ -2,10 +2,24 @@ import PropTypes from 'prop-types'
 import { Clock, Pencil, ThumbsDown, ThumbsDownFill, ThumbsUp, ThumbsUpFill, User } from '../common/Icons'
 import { GiveReviewAPI, UpdateReviewAPI } from '../../services/review.service'
 import { useRouter } from 'next/router';
+import { getAddressFromLatLng } from '../../services/api';
+import { useState } from 'react';
 
 function Card({ data, edit, editMode, user, update, requestTo}) {
   const router = useRouter()
   const currentPage = router.pathname
+  const [location, setLocation] = useState('')
+
+  const getAddress = async () => {
+    const res = await getAddressFromLatLng(data.latitude, data.longitude)
+    if (res) {
+      setLocation(res)
+    }
+  }
+
+  useState(() => {
+    getAddress()
+  }, [])
 
   //  REVIEWS COUNT
   const reviewsCount = () => {
@@ -52,7 +66,9 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
       <div className="p-5">
         <h5 className=" text-lg font-bold tracking-tight">{data.title}</h5>
         <div className='flex gap-2 items-center text-gray-600 mb-4'>
-          {data.cityId.postal_code}&nbsp; • &nbsp;{data.cityId.name}
+          {location.length > 0 &&
+           <span>{location[6].long_name}&nbsp; • &nbsp; {location[2].long_name}</span>
+          }
         </div>
         
         {data.min_capacity && data.max_capacity &&

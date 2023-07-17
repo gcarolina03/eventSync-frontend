@@ -13,19 +13,19 @@ export const GetServicesAPI = async () => {
   }
 }
 
-export const CreateServiceAPI = async (title, categoryId, cityId, max_capacity, min_capacity, selectedFile, price, start, end) => {
+export const CreateServiceAPI = async (title, categoryId, latitude, longitude, max_capacity, min_capacity, selectedFile, price, start, end) => {
   try {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('categoryId', categoryId);
     formData.append('max_capacity', max_capacity);
     formData.append('min_capacity', min_capacity);
-    formData.append('cityId', cityId);
+    formData.append('latitude', latitude);
+    formData.append('longitude', longitude);
     formData.append('price', price);
     formData.append('avatar', selectedFile);
     formData.append('start_time', start);
     formData.append('end_time', end);
-    console.log(formData)
 
 
     const { data } = await api.post('/api/profile/services', formData, {

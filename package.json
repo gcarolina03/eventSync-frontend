@@ -6,6 +6,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@glidejs/glide": "^3.6.0",
+    "@react-google-maps/api": "^2.19.0",
     "axios": "^1.4.0",
     "next": "latest",
     "prop-types": "^15.8.1",

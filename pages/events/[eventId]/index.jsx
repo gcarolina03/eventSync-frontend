@@ -9,6 +9,9 @@ import ResumeServices from "../../../components/events/ResumeServices"
 import { formatDate } from "../../../lib/utils"
 import GuestList from "../../../components/events/GuestList/GuestList"
 import FormGuest from "../../../components/events/GuestList/FormGuest"
+import { getAddressFromLatLng } from "../../../services/api"
+import { cookies } from "next/dist/client/components/headers"
+import Maps from "../../../components/common/Maps"
 
 function ResumeEvent() {
   const router = useRouter()
@@ -19,17 +22,50 @@ function ResumeEvent() {
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 	const [showGuestList, setShowGuestList] = useState(false)
 	const [shouldReload, setShouldReload] = useState(false);
-
+	const [location, setLocation] = useState('')
+	const [latitude, setLatitude] = useState('')
+	const [longitude, setLongitude] = useState('')
+	const [flag, setFlag] = useState(false)
 
   const getEvent = async () => {
     const res = await GetEventAPI(eventId)
-    setEvent(res.event)
+		if (res) {
+			setEvent(res.event)
+			return setFlag(true)
+		}
   }
 
   useEffect(() => {
     getEvent()
 		setShouldReload(false)
   }, [shouldReload])
+
+	const setAddress = () => {
+		if (event !== ''){
+		event.eventRequests.map( (request, idx) => {
+			if (request.serviceId.categoryId.title === 'Location') {
+				setLatitude(request.serviceId.latitude)
+				setLongitude(request.serviceId.longitude)
+			}
+		})}
+	}
+
+	const getAddress = async () => {
+		const res = await getAddressFromLatLng(latitude, longitude)
+    if (res) {
+      setLocation(res)
+    }
+	}
+
+	useEffect(() => {
+    getEvent()
+	}, [])
+	
+	useEffect(() => {
+		setAddress()
+		getAddress()
+		setFlag(false)
+	}, [flag])
 
 	const handleReload = () => {
 		setShouldReload(true)
@@ -88,11 +124,9 @@ function ResumeEvent() {
 								<div className="flex flex-col items-center">
 									<img src={`${event.img_url}`} className="w-40 h-40 bg-gray-300 rounded-full mb-4 shrink-0" />
 									<div className="mt-2flex flex-wrap gap-4 text-center">
-										{event.eventRequests.map((request) => {
-											if (request.serviceId.categoryId.title === 'Location') 
-												return <span key={request._id}>{request.serviceId.cityId.postal_code}&nbsp; • &nbsp; {request.serviceId.cityId.name}</span>
-											}
-										)}
+										{location.length > 0 && 
+											<span>{location[6].long_name}&nbsp; • &nbsp; {location[2].long_name}</span>
+										}
 									</div>
 								</div>
 								<div className="flex flex-col mt-4 gap-2">
@@ -119,13 +153,16 @@ function ResumeEvent() {
 									</div>
 								</div>
 							</div>
-							<div className="bottom-5 flex flex-row text-xl justify-between">
+							<div className="bottom-5 flex flex-row text-xl justify-between my-10">
 								<p className="font-normal flex gap-2 text-gray-600 items-center">
 									<Card />
 									Total: 
 								</p>
 								<p className=" right-0 font-bold">{event.total_price} €</p>
 							</div>
+						{location.length > 0 &&
+							<Maps latitude={latitude} longitude={longitude} />
+						}
 						</div>
 					</div>
 					<div className="col-span-4 relative sm:col-span-9 xl:col-span-10 p-6 pl-6 sm:pl-20">

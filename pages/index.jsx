@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react"
 import { GetCategoriesAPI } from "../services/category.services"
-import { ArrowRight, Camera, Couch, FaceSmile, Food, GroupPeople, Map, Production } from "../components/common/Icons"
+import { ArrowRight, CalendarPlus, Camera, Couch, FaceSmile, Food, GroupPeople, Map, Production } from "../components/common/Icons"
 import { GetServicesAPI } from "../services/services.service"
 import Carousel from "../components/home/Carousel"
-import Card from "../components/services/Card"
 import Link from "next/link"
 import { GetEventsAPI } from "../services/event.service"
 import { GetProfileAPI } from "../services/user.service"
 import NoServices from "../components/services/NoServices"
+import Slide from "../components/home/Slide"
+import AddItem from "../components/common/AddItem"
+import { useRouter } from "next/router"
 
 export default function Home() {
+  const router = useRouter()
   const [categoryList, setCategoryList] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
   const [services, setServices] = useState('')
@@ -66,6 +69,10 @@ export default function Home() {
     setEvents(res.data)
   }
 
+  const goToEvents = () => {
+    router.push('/events')
+  }
+
   // GET DATA
   useEffect(() => {
     GetCategoriesList()
@@ -93,23 +100,40 @@ export default function Home() {
       )
       }
         <div className="w-full flex justify-center">
-          <Link href='/services' className=" inline-flex items-center px-6 py-4 gap-2 text-md font-bold text-center text-white bg-dark rounded-lg hover:bg-[#201B4F] focus:ring-4 focus:outline-none focus:ring-[#201B4F">
+          <Link href='/services' className=" inline-flex items-center px-6 py-4 my-8 gap-2 text-md font-bold text-center text-white bg-dark rounded-lg hover:bg-[#201B4F] focus:ring-4 focus:outline-none focus:ring-[#201B4F">
             View all services <ArrowRight />
           </Link>
         </div>
 
-      {events.length > 0 && 
+      {events.length > 0 && (
         <>
-          <p className='font-bold mt-10 text-[30px]'>Check out your future events...</p>
+          <p className='font-bold text-[30px]'>Check out your future events...</p>
           <Carousel data={events} type='events' />
           <div className="w-full flex justify-center">
-          <Link href='/events' className=" inline-flex items-center px-6 py-4 gap-2 mb-5 text-md font-bold text-center text-white bg-dark rounded-lg hover:bg-[#201B4F] focus:ring-4 focus:outline-none focus:ring-[#201B4F">
-            View all your events <ArrowRight />
-          </Link>
-        </div>
+            <Link href='/events' className=" inline-flex items-center px-6 py-4 my-8 gap-2 mb-5 text-md font-bold  text-center text-white bg-dark rounded-lg hover:bg-[#201B4F] focus:ring-4 focus:outline-none focus:ring-[#201B4F">
+              View all your events <ArrowRight />
+            </Link>
+          </div>
         </>
+      ) || (
+        <>
+          <p className='font-bold text-[30px]'>Check out your future events...</p>
+          <div className='mt-4 flex flex-wrap gap-8'>
+            <AddItem 
+              onClick={goToEvents} 
+              text='Go to events.' 
+              icon={ <CalendarPlus className='fill-gray-500 mb-4' height='120' /> }
+            />
+          </div>
+        </>
+      )
       }
       
+      <hr class="my-12 h-0.5 border-t-0 bg-gray-200 opacity-100 dark:opacity-50" />
+      <p className='font-bold text-center mb-12 text-[30px]'>What our customers say about us</p>
+      <Slide />
+
+      <hr class="my-20 h-0.5 border-t-0 bg-gray-200 opacity-100 dark:opacity-50" />
 
     </div>
     </>

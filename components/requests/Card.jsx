@@ -1,7 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Clock, User } from '../common/Icons'
+import { getAddressFromLatLng } from '../../services/api'
 
 function CardRequest({ request }) {
+  const [location, setLocation] = useState('')
+
+  const getAddress = async () => {
+    const res = await getAddressFromLatLng(request.serviceId.latitude, request.serviceId.longitude)
+    if (res) {
+      setLocation(res)
+    }
+  }
+
+  useEffect(() => {
+    getAddress()
+  }, [])
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg relative h-[400px] w-[300px] shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <div className="bg-[#9CC0FA] rounded-t-lg relative h-[180px]">
@@ -12,7 +26,9 @@ function CardRequest({ request }) {
       <div className="p-5">
         <h5 className=" text-lg font-bold tracking-tight">{request.serviceId.title}</h5>
         <div className='flex gap-2 items-center text-gray-600 mb-4'>
-          {request.serviceId.cityId.postal_code}&nbsp; • &nbsp;{request.serviceId.cityId.name}
+          {location.length > 0 &&
+           <span>{location[6].long_name}&nbsp; • &nbsp; {location[2].long_name}</span>
+          }
         </div>
         
         {request.serviceId.min_capacity && request.serviceId.max_capacity &&

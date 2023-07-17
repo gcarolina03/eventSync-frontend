@@ -30,3 +30,18 @@
 input[type=radio] {
   accent-color: #483EB1;
 }
+
+.glide__bullet--active > span{
+  background-color: black;
+  border: none;
+  transform: scale(1.5);
+}
+
+.polaroid {
+  background: #fbfdf4;
+  padding: 1rem;
+  box-shadow: 0 0.2rem 1.2rem rgba(0, 0, 0, 0.2);
+  height: 300px;
+  width: 250px;
+  transform: scale(0.8, 0.8) rotate(10deg);
+}

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { GetEventsAPI } from '../../services/event.service'
-import Card from '../../components/events/Card'
-import Blur from '../../components/common/Blur'
-import EventForm from '../../components/events/EventForm'
-import { CalendarPlus } from '../../components/common/Icons'
-import AddItem from '../../components/common/AddItem'
+import { GetEventsAPI } from '../../src/services/event.service'
+import Card from '../../src/components/events/Card'
+import Blur from '../../src/components/common/Blur'
+import EventForm from '../../src/components/events/EventForm'
+import { CalendarPlus } from '../../src/components/common/Icons'
+import AddItem from '../../src/components/common/AddItem'
+import withAuthentication from '../../src/lib/auth'
 
 function Events() {
   const [events, setEvents] = useState([])
@@ -12,7 +13,9 @@ function Events() {
 
   const getEvents = async () => {
    const res = await GetEventsAPI()
-    setEvents(res.data)
+   if(res) {
+     setEvents(res.data)
+   }
   }
 
   const handleForm = () => {
@@ -48,4 +51,4 @@ function Events() {
   )
 }
 
-export default Events
+export default withAuthentication(Events)

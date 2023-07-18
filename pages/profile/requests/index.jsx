@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { ArrowUpAndDown, Check, Search, XMark } from '../../../components/common/Icons'
-import { GetRequestsAPI, UpdateRequestAPI } from '../../../services/request.service'
-import { formatDate } from '../../../lib/utils'
+import { ArrowUpAndDown, Check, Search, XMark } from '../../../src/components/common/Icons'
+import { GetRequestsAPI, UpdateRequestAPI } from '../../../src/services/request.service'
+import { formatDate } from '../../../src/lib/utils'
+import withAuthentication from '../../../src/lib/auth'
 
 function Requests() {
   const [requests, setRequests] = useState([])
@@ -11,7 +12,9 @@ function Requests() {
 
   const getRequests = async () => {
     const res = await GetRequestsAPI()
-    setRequests(res.request)
+    if(res) {
+      setRequests(res.request)
+    }
   }
 
   const handleOrder = () => {
@@ -190,4 +193,4 @@ function Requests() {
   )
 }
 
-export default Requests
+export default withAuthentication(Requests)

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import Glide from "@glidejs/glide"
-import { ArrowLeft, ArrowRight, CircleUser, Quote, User } from "../common/Icons"
+import { CircleUser, Quote } from "../common/Icons"
 
 
 function Slide() {

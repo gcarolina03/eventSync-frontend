@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react"
-import { GetCategoriesAPI } from "../services/category.services"
-import { ArrowRight, CalendarPlus, Camera, Couch, FaceSmile, Food, GroupPeople, Map, Production } from "../components/common/Icons"
-import { GetServicesAPI } from "../services/services.service"
-import Carousel from "../components/home/Carousel"
+import { GetCategoriesAPI } from "../src/services/category.services"
+import { ArrowRight, CalendarPlus, Camera, Couch, FaceSmile, Food, GroupPeople, Map, Production } from "../src/components/common/Icons"
+import { GetServicesAPI } from "../src/services/services.service"
+import Carousel from "../src/components/home/Carousel"
 import Link from "next/link"
-import { GetEventsAPI } from "../services/event.service"
-import { GetProfileAPI } from "../services/user.service"
-import NoServices from "../components/services/NoServices"
-import Slide from "../components/home/Slide"
-import AddItem from "../components/common/AddItem"
+import { GetEventsAPI } from "../src/services/event.service"
+import { GetProfileAPI } from "../src/services/user.service"
+import NoServices from "../src/components/services/NoServices"
+import Slide from "../src/components/home/Slide"
+import AddItem from "../src/components/common/AddItem"
 import { useRouter } from "next/router"
 
 export default function Home() {
@@ -17,6 +17,7 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [services, setServices] = useState('')
   const [events, setEvents] = useState('')
+  const [userLog, setUserLog] = useState('')
 
   const icons = {
     Production: <Production />,
@@ -60,6 +61,7 @@ export default function Home() {
     const res = await GetProfileAPI()
     if (res) {
       getEvents()
+      setUserLog(res)
     }
   }
 
@@ -114,7 +116,7 @@ export default function Home() {
             </Link>
           </div>
         </>
-      ) || (
+      ) || userLog && (
         <>
           <p className='font-bold text-[30px]'>Check out your future events...</p>
           <div className='mt-4 flex flex-wrap gap-8'>

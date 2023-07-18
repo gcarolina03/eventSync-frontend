@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
-import { CirclePlus } from "../../../components/common/Icons"
-import AddItem from "../../../components/common/AddItem"
-import { GetServicesAPI } from "../../../services/myservices.service"
-import Blur from "../../../components/common/Blur"
-import ServicesForm from "../../../components/services/ServicesForm"
-import Card from "../../../components/services/Card"
+import { CirclePlus } from "../../../src/components/common/Icons"
+import AddItem from "../../../src/components/common/AddItem"
+import { GetServicesAPI } from "../../../src/services/myservices.service"
+import Blur from "../../../src/components/common/Blur"
+import ServicesForm from "../../../src/components/services/ServicesForm"
+import Card from "../../../src/components/services/Card"
 import Link from "next/link"
+import withAuthentication from "../../../src/lib/auth"
 
 function MyServices() {
   const [services, setServices] = useState([])
@@ -15,7 +16,9 @@ function MyServices() {
 
   const getServices = async () => {
     const res = await GetServicesAPI()
-    setServices(res.data)
+    if(res){
+      setServices(res.data)
+    }
   }
 
   const handleForm = () => {
@@ -70,4 +73,4 @@ function MyServices() {
   )
 }
 
-export default MyServices
+export default withAuthentication(MyServices)

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import ErrorMsg from '../../components/common/ErrorMsg'
-import { SignUpAPI } from '../../services/auth.service'
+import ErrorMsg from '../../src/components/common/ErrorMsg'
+import { SignUpAPI } from '../../src/services/auth.service'
 import { useRouter } from 'next/router'
-import { Eye, EyeSlash } from '../../components/common/Icons'
+import { Eye, EyeSlash } from '../../src/components/common/Icons'
 
 function Signup () {
   const router = useRouter()

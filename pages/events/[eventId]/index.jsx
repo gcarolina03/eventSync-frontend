@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react"
-import { DeleteEventAPI, GetEventAPI, RemoveGuestFromListAPI } from "../../../services/event.service"
+import { DeleteEventAPI, GetEventAPI, RemoveGuestFromListAPI } from "../../../src/services/event.service"
 import { useRouter } from 'next/router'
-import { CalendarDays, Card, Check, Clock, Pencil, TrashCan, User } from "../../../components/common/Icons"
-import Blur from "../../../components/common/Blur"
-import EventForm from "../../../components/events/EventForm"
-import DeleteAlert from "../../../components/events/DeleteAlert"
-import ResumeServices from "../../../components/events/ResumeServices"
-import { formatDate } from "../../../lib/utils"
-import GuestList from "../../../components/events/GuestList/GuestList"
-import FormGuest from "../../../components/events/GuestList/FormGuest"
-import { getAddressFromLatLng } from "../../../services/api"
-import { cookies } from "next/dist/client/components/headers"
-import Maps from "../../../components/common/Maps"
+import { CalendarDays, Card, Check, Clock, Pencil, TrashCan, User } from "../../../src/components/common/Icons"
+import Blur from "../../../src/components/common/Blur"
+import EventForm from "../../../src/components/events/EventForm"
+import DeleteAlert from "../../../src/components/events/DeleteAlert"
+import ResumeServices from "../../../src/components/events/ResumeServices"
+import { formatDate } from "../../../src/lib/utils"
+import GuestList from "../../../src/components/events/GuestList/GuestList"
+import FormGuest from "../../../src/components/events/GuestList/FormGuest"
+import { getAddressFromLatLng } from "../../../src/services/api"
+import Maps from "../../../src/components/common/Maps"
+import withAuthentication from "../../../src/lib/auth"
 
 function ResumeEvent() {
 	const router = useRouter()
@@ -44,7 +44,7 @@ function ResumeEvent() {
 	const setAddress = () => {
 		if (event !== ''){
 		event.eventRequests.map( (request, idx) => {
-			if (request.serviceId.categoryId.title === 'Location') {
+			if (request.serviceId.categoryId.title === 'Location' && request.state === 'confirmed' ) {
 				setLatitude(request.serviceId.latitude)
 				setLongitude(request.serviceId.longitude)
 			}
@@ -204,4 +204,4 @@ function ResumeEvent() {
   )
 }
 
-export default ResumeEvent
+export default withAuthentication(ResumeEvent)

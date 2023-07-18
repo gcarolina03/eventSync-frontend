@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types'
-import { Clock, Pencil, ThumbsDown, ThumbsDownFill, ThumbsUp, ThumbsUpFill, User } from '../common/Icons'
+import { Clock, Map, Pencil, ThumbsDown, ThumbsDownFill, ThumbsUp, ThumbsUpFill, User } from '../common/Icons'
 import { GiveReviewAPI, UpdateReviewAPI } from '../../services/review.service'
 import { useRouter } from 'next/router';
 import { getAddressFromLatLng } from '../../services/api';
 import { useState } from 'react';
+import Maps from '../common/Maps';
 
 function Card({ data, edit, editMode, user, update, requestTo}) {
   const router = useRouter()
@@ -61,14 +62,20 @@ function Card({ data, edit, editMode, user, update, requestTo}) {
         }
         <div className='px-3 text-sm py-1 bg-gray-600 text-white font-bold top-2 left-2 rounded-lg absolute opacity-80'>{data.categoryId.title}</div>
         <div className='px-3 text-lg py-1 bg-neutral-100 text-black font-bold bottom-2 right-2 rounded-lg absolute opacity-80'>{data.price} €</div>
+
         <img className="rounded-t-lg w-full h-full object-cover mx-auto" src={`${data.img_url}`} alt="" />
       </div>
       <div className="p-5">
         <h5 className=" text-lg font-bold tracking-tight">{data.title}</h5>
-        <div className='flex gap-2 items-center text-gray-600 mb-4'>
+        <div className='text-gray-600 mb-4'>
           {location.length > 0 &&
            <span>{location[6].long_name}&nbsp; • &nbsp; {location[2].long_name}</span>
           }
+          <div class="group inline-flex cursor-pointer text-sm ml-2 relative text-black font-bold rounded-lg"><Map />
+            <div class="opacity-0 w-28 flex items-center justify-center w-[400px] bg-black rounded-lg p-2 absolute group-hover:opacity-100 bottom-0 ml-8 pointer-events-none z-[10]">
+              <Maps latitude={data.latitude} longitude={data.longitude} />
+            </div>
+          </div>
         </div>
         
         {data.min_capacity && data.max_capacity &&

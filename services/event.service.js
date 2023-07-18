@@ -78,3 +78,16 @@ export const UpdateGuestListAPI = async (id, name, phone, number) => {
     console.error('Cannot update event', error)
   }
 }
+
+export const RemoveGuestFromListAPI = async (event, guest) => {
+  try {
+    const { data } = await api.delete(`/api/events/${event}/guest/${guest}`, {
+        headers: {
+        token: localStorage.getItem('token')
+      }
+    })
+    return data
+  } catch (error) {
+    console.error('Cannot update event', error)
+  }
+}

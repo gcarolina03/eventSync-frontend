@@ -95,17 +95,6 @@ function Carousel({ data, type }) {
             </div>)
           }
         })}
-        {data.map((resource) => {
-          if(type === 'services') {
-            return (
-              <div
-                key={resource._id}
-                className="carousel-item text-center relative  snap-start"
-              >
-            <CardServices data={resource}/>
-            </div>)
-          }
-        })}
       </div>
     </div>
   </div>

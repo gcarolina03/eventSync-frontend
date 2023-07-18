@@ -300,14 +300,14 @@ function ServicesForm({ handleForm, service }) {
         }
 
         {/* ------- ADDRESS ------- */}
-        <div>
+        <>
           <StandaloneSearchBox onLoad={(ref) => (searchBoxRef.current = ref)} onPlacesChanged={handlePlacesChanged}>
             <input type="text" className="w-full h-12 border border-gray-800 rounded px-3" placeholder="Enter address" />
           </StandaloneSearchBox>
           {latitude && longitude && (
             <Maps latitude={latitude} longitude={longitude} />
           )}
-        </div>
+        </>
         
         {/* ------- PRICE ------- */}
         <input value={price} min='1' className="w-full h-12 border border-gray-800 rounded px-3" type="number" step="0.01" placeholder="Price*" onChange={handlePrice}/>

@@ -97,8 +97,7 @@ export default function Home() {
         <NoServices />
       ) || (
         <Carousel data={filterServices()} type='services' />
-      )
-      }
+      )}
         <div className="w-full flex justify-center">
           <Link href='/services' className=" inline-flex items-center px-6 py-4 my-8 gap-2 text-md font-bold text-center text-white bg-dark rounded-lg hover:bg-[#201B4F] focus:ring-4 focus:outline-none focus:ring-[#201B4F">
             View all services <ArrowRight />

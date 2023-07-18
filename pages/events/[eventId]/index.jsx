@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import { DeleteEventAPI, GetEventAPI } from "../../../services/event.service"
+import { DeleteEventAPI, GetEventAPI, RemoveGuestFromListAPI } from "../../../services/event.service"
 import { useRouter } from 'next/router'
-import { CalendarDays, Card, Clock, Pencil, TrashCan, User } from "../../../components/common/Icons"
+import { CalendarDays, Card, Check, Clock, Pencil, TrashCan, User } from "../../../components/common/Icons"
 import Blur from "../../../components/common/Blur"
 import EventForm from "../../../components/events/EventForm"
 import DeleteAlert from "../../../components/events/DeleteAlert"
@@ -14,7 +14,7 @@ import { cookies } from "next/dist/client/components/headers"
 import Maps from "../../../components/common/Maps"
 
 function ResumeEvent() {
-  const router = useRouter()
+	const router = useRouter()
   const { eventId } = router.query
   // DATA
   const [event, setEvent] = useState('')
@@ -25,13 +25,14 @@ function ResumeEvent() {
 	const [location, setLocation] = useState('')
 	const [latitude, setLatitude] = useState('')
 	const [longitude, setLongitude] = useState('')
-	const [flag, setFlag] = useState(false)
-
+	const [addressLoad, setAddressLoad] = useState(false)
+	const [editModeGuest, setEditModeGuest] = useState(false)
+	
   const getEvent = async () => {
     const res = await GetEventAPI(eventId)
 		if (res) {
 			setEvent(res.event)
-			return setFlag(true)
+			return setAddressLoad(true)
 		}
   }
 
@@ -64,8 +65,8 @@ function ResumeEvent() {
 	useEffect(() => {
 		setAddress()
 		getAddress()
-		setFlag(false)
-	}, [flag])
+		setAddressLoad(false)
+	}, [addressLoad])
 
 	const handleReload = () => {
 		setShouldReload(true)
@@ -82,6 +83,18 @@ function ResumeEvent() {
 	const handleGuestList= () => {
 		setShowGuestList(!showGuestList)
 	}
+
+
+  const handleEditGuest = () => {
+    setEditModeGuest(!editModeGuest)
+  }
+
+	const removeGuest = async (guest) => {
+    const res = await RemoveGuestFromListAPI(event._id, guest)
+    if(res) {
+      handleReload()
+    }
+  }
 
 	// DELETE EVENT SERVICE
   const DeleteEventService = async () => {
@@ -110,7 +123,12 @@ function ResumeEvent() {
 								<div onClick={handleGuestList} className="cursor-pointer flex items-center px-4 h-8 py-2 text-sm font-bold text-center bg-[#ADE0E4] rounded-lg hover:bg-[#79AEB1]">
 									Go Back
 								</div>
-								<Pencil className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4" /> 
+								{!editModeGuest && (
+									<Pencil onClick={handleEditGuest} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-gray-300 hover:bg-gray-400 text-gray-700 px-4" /> 
+								) || (
+									<Check onClick={handleEditGuest} className="cursor-pointer h-8 py-2 text-sm rounded-lg font-bold bg-green-300 hover:bg-green-400 text-green-700 px-4" /> 
+								)
+								}
 							</>
 						)}
 					</div>
@@ -171,7 +189,7 @@ function ResumeEvent() {
             <h2 className="text-2xl font-bold">{!showGuestList ? 'Services' : 'Guest List'} </h2>
 						{showGuestList && <FormGuest event={event._id} reload={handleReload}  />}
           </div>
-						{!showGuestList ? <ResumeServices event={event} /> : <GuestList list={event.guestList} />}
+						{!showGuestList ? <ResumeServices event={event} /> : <GuestList list={event.guestList} editModeGuest={editModeGuest} removeGuest={removeGuest}/>}
 					</div>
 					
 				</div>

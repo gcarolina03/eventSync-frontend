@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
+import { TrashCan } from '../../common/Icons'
 
-function GuestList({ list }) {
+function GuestList({ list, editModeGuest, removeGuest}) {
   return (
     <>
       {/* GUEST LIST AREA */}
@@ -16,6 +17,11 @@ function GuestList({ list }) {
             <th scope="col" className="px-6 py-5">
               Number of people
             </th>
+            {editModeGuest && 
+              <th scope="col" className="py-5 w-10 pr-2">
+                Action
+              </th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -31,6 +37,11 @@ function GuestList({ list }) {
                 <td className="px-4 py-4">
                   {guest.number}
                 </td>
+                {editModeGuest && 
+                  <td scope="col" className="w-10">
+                    <TrashCan onClick={() => removeGuest(guest._id)} className="cursor-pointer gap-2 h-8 py-2 text-sm rounded-lg font-bold bg-red-300 hover:bg-red-400 text-red-700 px-4" />   
+                  </td>
+                }
               </tr>
             ))
           }
@@ -43,6 +54,8 @@ function GuestList({ list }) {
 // props validation
 GuestList.propTypes = {
   list: PropTypes.object,
+  editModeGuest: PropTypes.bool,
+  removeGuest: PropTypes.func
 }
 
 export default GuestList

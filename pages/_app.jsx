@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import Layout from '../components/common/Layout'
+import Layout from '../src/components/common/Layout'
 import '../styles/globals.css'
 
 export default function App({ Component, pageProps }) {
